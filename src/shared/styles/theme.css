@@ -1,0 +1,9 @@
+@import "./fonts.css";
+@import "utilities.css";
+
+:root {
+    --color-primary: #2563eb;
+    --color-secondary: #64748b;
+    --button-height-sm: 3.5rem; /* 56px */
+    --button-height-md: 4rem;   /* 64px */
+}

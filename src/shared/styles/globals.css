@@ -1,0 +1,33 @@
+@import "tailwindcss";
+@import "theme.css";
+
+@layer base {
+  body {
+    @apply font-sans text-gray-900 bg-white;
+  }
+}
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  background-color: rgb(245, 245, 245);
+  height: 100vh;
+  overflow: hidden;
+}
+
+body {
+  background-color: rgb(255, 255, 255);
+  max-width: 450px;
+  min-width: 350px;
+  height: 100vh;
+  margin: 0 auto;
+}
