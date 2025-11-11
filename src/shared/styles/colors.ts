@@ -21,10 +21,14 @@ export const colors = {
         600: '#AAAAAA',
     },
     red: {
+        300: '#F35242',
         400: '#F20F0F',
         500: '#C70D0D',
     },
     green: {
-        500: '#35CC4C',
+        500: '#26BE12',
     },
+    yellow: {
+        500: '#EFAF25',
+    }
 };

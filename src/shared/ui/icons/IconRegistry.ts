@@ -6,6 +6,7 @@ import {IcCoupon} from "./IcCoupon";
 import {IcIssue} from "./IcIssue";
 import {IcNotification} from "./IcNotification";
 import {IcProfile} from "./IcProfile";
+import {IcRight} from "./IcRight.tsx";
 
 export const IconRegistry = {
     identify: IcIdentify,
@@ -15,8 +16,8 @@ export const IconRegistry = {
     coupon: IcCoupon,
     issue: IcIssue,
     notification: IcNotification,
-    profile: IcProfile
-
+    profile: IcProfile,
+    right: IcRight,
 }
 
 export type IconName = keyof typeof IconRegistry

@@ -8,6 +8,7 @@ import {IconButton} from "./shared/ui/buttons/IconButton.tsx";
 import {SlideSelector} from "./shared/ui/SlideSelector.tsx";
 import {useState} from "react";
 import {CardSlider} from "./shared/ui/CardSlider.tsx";
+import {CouponRequestBlock} from "./shared/ui/CouponRequestBlock.tsx";
 
 function App() {
     const [value, setValue] = React.useState("");
@@ -22,10 +23,10 @@ function App() {
     };
 
     const cards = [
-        <div className="w-40 h-40 flex items-center justify-center rounded-xl bg-purple-500 text-white font-bold">Card 1</div>,
-        <div className="w-40 h-40 flex items-center justify-center rounded-xl bg-cyan-500 text-white font-bold">Card 2</div>,
-        <div className="w-40 h-40 flex items-center justify-center rounded-xl bg-amber-500 text-white font-bold">Card 3</div>,
-        <div className="w-40 h-40 flex items-center justify-center rounded-xl bg-rose-500 text-white font-bold">Card 4</div>,
+        <div className="h-40 flex flex-1 items-center justify-center rounded-xl bg-purple-500 text-white font-bold">Card 1</div>,
+        <div className="h-40 flex flex-1 items-center justify-center rounded-xl bg-cyan-500 text-white font-bold">Card 2</div>,
+        <div className="h-40 flex flex-1 items-center justify-center rounded-xl bg-amber-500 text-white font-bold">Card 3</div>,
+        <div className="h-40 flex flex-1 items-center justify-center rounded-xl bg-rose-500 text-white font-bold">Card 4</div>,
     ];
 
 
@@ -89,6 +90,25 @@ function App() {
                 <Input label="입력제목" defaultValue="대충 입력값..."/>
                 <Input label="입력제목"/>
                 <button onClick={submit}>제출</button>
+
+                <CouponRequestBlock
+                    mode="select"
+                    selected={true}
+                    title="신입생 간식사업"
+                    subtitle="호시 타코야끼"
+                    itemCount={5}
+                    amount={250000}
+                    statusLabel="발행"
+                />
+
+                <CouponRequestBlock
+                    mode="normal"
+                    onClick={() => console.log('hello')}
+                    title="신입생 간식사업"
+                    itemCount={5}
+                    amount={250000}
+                    statusLabel="결제대기"
+                />
 
             </div>
             <BottomMenu/>

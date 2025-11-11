@@ -3,7 +3,6 @@
     .gradient-border {
         position: relative;
         isolation: isolate;
-        border-radius: 9999px;
     }
     .gradient-border::before {
         content: "";
