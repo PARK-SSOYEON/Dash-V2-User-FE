@@ -17,6 +17,7 @@ export const CardSlider: React.FC<CardSliderProps> = ({cards}) => {
         <div style={{overflowX: "hidden"}}>
             <Swiper
                 modules={[Pagination]}
+                spaceBetween={20}
                 slidesPerView={1}
                 onSlideChange={(swiper) => setActive(swiper.activeIndex)}
                 onSwiper={(swiper) => setActive(swiper.activeIndex)}
