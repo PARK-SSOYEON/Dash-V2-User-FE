@@ -12,6 +12,7 @@ function App() {
     const [value, setValue] = React.useState("");
     const [error, setError] = React.useState<string | undefined>();
     const [val, setVal] = useState('항목1');
+    const [val2, setVal2] = useState('항목1');
 
     const submit = () => {
         if (!value.trim()) {
@@ -27,6 +28,12 @@ function App() {
                     options={['항목1','항목2','항목3']}
                     value={val}
                     onChange={setVal}
+                />
+                <SlideSelector
+                    options={['항목1','항목2','항목3']}
+                    value={val2}
+                    onChange={setVal2}
+                    disabledOptions={['항목3']}
                 />
                 <Button
                     mode="mono"
