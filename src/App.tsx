@@ -5,10 +5,13 @@ import {Input} from "./shared/ui/Input.tsx";
 import Layout from "./app/widget/layout.tsx";
 import {BottomMenu} from "./app/widget/BottomMenu.tsx";
 import {IconButton} from "./shared/ui/buttons/IconButton.tsx";
+import {SlideSelector} from "./shared/ui/SlideSelector.tsx";
+import {useState} from "react";
 
 function App() {
     const [value, setValue] = React.useState("");
     const [error, setError] = React.useState<string | undefined>();
+    const [val, setVal] = useState('항목1');
 
     const submit = () => {
         if (!value.trim()) {
@@ -20,6 +23,11 @@ function App() {
         <Layout>
             <div className="flex w-full flex-col gap-4">
 
+                <SlideSelector
+                    options={['항목1','항목2','항목3']}
+                    value={val}
+                    onChange={setVal}
+                />
                 <Button
                     mode="mono"
                 > 테스트용 </Button>

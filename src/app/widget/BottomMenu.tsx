@@ -15,7 +15,7 @@ const items: Item[] = [
     {to: "/account", icon: "profile"},
 ];
 
-export function BottomMenu() {
+export const BottomMenu = React.memo(function BottomMenu() {
     const [pressedKey, setPressedKey] = React.useState<string | null>(null);
 
     const location = useLocation();
@@ -40,7 +40,7 @@ export function BottomMenu() {
                         className={
                             "absolute top-1/2 left-0 pointer-events-none rounded-full " +
                             (showIndicator ? " opacity-30 " : " opacity-0 ") +
-                            " transition-[left,transform,opacity,background-color,box-shadow] duration-250 ease-[cubic-bezier(0.34,1.56,0.64,1)] will-change-[left,transform,opacity] " +
+                            " transition-[left,transform,opacity,background-color,box-shadow] duration-250 ease-[cubic-bezier(0.34,1.26,0.64,1)] will-change-[left,transform,opacity] " +
                             (isPressed ? " bg-white shadow-[0_0_6px_rgba(0,0,0,0.25)] " : " bg-gray-200 ")
                         }
                         style={{
@@ -59,7 +59,10 @@ export function BottomMenu() {
                         >
                             {({isActive}) => {
                                 const isPressed = pressedKey === to;
-                                const iconClass = isActive || isPressed ? "text-blue-500" : "text-black";
+                                const hasPressed = pressedKey !== null;
+                                const iconClass = hasPressed
+                                    ? (isPressed ? "text-blue-500" : "text-black")
+                                    : (isActive ? "text-blue-500" : "text-black");
 
                                 return (
                                     <button
@@ -86,4 +89,4 @@ export function BottomMenu() {
             </ul>
         </nav>
     );
-}
+});
