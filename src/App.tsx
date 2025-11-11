@@ -7,6 +7,7 @@ import {BottomMenu} from "./app/widget/BottomMenu.tsx";
 import {IconButton} from "./shared/ui/buttons/IconButton.tsx";
 import {SlideSelector} from "./shared/ui/SlideSelector.tsx";
 import {useState} from "react";
+import {CardSlider} from "./shared/ui/CardSlider.tsx";
 
 function App() {
     const [value, setValue] = React.useState("");
@@ -19,6 +20,14 @@ function App() {
             setError("필수 입력값이에요");
         }
     };
+
+    const cards = [
+        <div className="w-40 h-40 flex items-center justify-center rounded-xl bg-purple-500 text-white font-bold">Card 1</div>,
+        <div className="w-40 h-40 flex items-center justify-center rounded-xl bg-cyan-500 text-white font-bold">Card 2</div>,
+        <div className="w-40 h-40 flex items-center justify-center rounded-xl bg-amber-500 text-white font-bold">Card 3</div>,
+        <div className="w-40 h-40 flex items-center justify-center rounded-xl bg-rose-500 text-white font-bold">Card 4</div>,
+    ];
+
 
     return (
         <Layout>
@@ -34,6 +43,9 @@ function App() {
                     value={val2}
                     onChange={setVal2}
                     disabledOptions={['항목3']}
+                />
+                <CardSlider
+                    cards={cards}
                 />
                 <Button
                     mode="mono"
@@ -78,36 +90,6 @@ function App() {
                 <Input label="입력제목"/>
                 <button onClick={submit}>제출</button>
 
-                <Button
-                    mode="mono"
-                    icon={"identify"}
-                    iconPosition='left'
-                > 테스트용 </Button>
-                <Button
-                    mode="color_fill"
-                    icon={"identify"}
-                    iconPosition='left'
-                > 테스트용 </Button>
-                <Button
-                    mode="red_line"
-                    icon={"identify"}
-                    iconPosition='left'
-                > 테스트용 </Button>
-                <Button
-                    mode="mono"
-                    icon={"identify"}
-                    iconPosition='right'
-                > 테스트용 </Button>
-                <Button
-                    mode="color_fill"
-                    icon={"identify"}
-                    iconPosition='right'
-                > 테스트용 </Button>
-                <Button
-                    mode="red_line"
-                    icon={"identify"}
-                    iconPosition='right'
-                > 테스트용 </Button>
             </div>
             <BottomMenu/>
 
