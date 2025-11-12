@@ -19,6 +19,8 @@ function App() {
 
     const [items, setItems] = React.useState<IssueItem[]>([
         { id: "1", name: "오리지널 타코야끼", qty: 5 },
+        { id: "2", name: "네기 타코야끼", qty: 100 },
+        { id: "3", name: "눈꽃치즈 타코야끼", qty: 1000 }
     ]);
 
 
@@ -113,6 +115,18 @@ function App() {
                     itemCount={5}
                     amount={250000}
                     statusLabel="결제대기"
+                />
+                <MenuInput
+                    items={items}
+                    onChange={setItems}
+                    onDelete={(id) => setItems((prev) => prev.filter((x) => x.id !== id))}
+                    onAdd={() =>
+                        setItems((prev) => [
+                            ...prev,
+                            {id: crypto.randomUUID(), name: "", qty: 0},
+                        ])
+                    }
+                    mode={"edit"}
                 />
                 <MenuInput
                     items={items}

@@ -5,12 +5,12 @@ import {cn} from "../lib/cn.ts";
 export type CouponRequestMode = 'normal' | 'select' | 'view';
 
 const statusColorClassMap: Record<string, string> = {
-    대기중: 'text-gray-500',
-    결제대기: 'text-yellow-500',
-    발행: 'text-blue-500',
-    반려: 'text-red-300',
-    배부: 'text-green-500',
-    사용완료: 'text-gray-500',
+    대기중: 'text-(--color-gray-500)',
+    결제대기: 'text-(--color-yellow-500)',
+    발행: 'text-(--color-blue-500)',
+    반려: 'text-(--color-red-300)',
+    배부: 'text-(--color-green-500)',
+    사용완료: 'text-(--color-gray-500)',
 };
 
 export interface CouponRequestBlockProps {
@@ -30,7 +30,7 @@ const couponRequestBlock = cva(
     {
         variants: {
             selected: {
-                true: 'border-blue-500 border-2',
+                true: 'border-(--color-blue-500) border-2',
                 false: 'gradient-border',
             },
             mode: {
@@ -58,7 +58,7 @@ export const CouponRequestBlock = ({
                                    }: CouponRequestBlockProps) => {
     const isNormal = mode === 'normal';
     const borderSelected = selected && mode === 'select';
-    const colorClass = statusColorClassMap[statusLabel] ?? 'text-gray-500';
+    const colorClass = statusColorClassMap[statusLabel] ?? 'text-(--color-gray-500)';
 
     const baseClasses = cn(
         couponRequestBlock({selected: borderSelected, mode})
@@ -77,7 +77,7 @@ export const CouponRequestBlock = ({
             <div className="min-w-0">
                 <div className="text-black text-xl font-bold truncate">{title}</div>
                 {subtitle ? <div className="mt-0.5 text-sm text-black truncate">{subtitle}</div> : null}
-                {detailText ? <div className="mt-2 text-base font-normal text-gray-400">{detailText}</div> : null}
+                {detailText ? <div className="mt-2 text-base font-normal text-(--color-gray-400)">{detailText}</div> : null}
             </div>
 
             <div className="flex items-center gap-2 shrink-0">
