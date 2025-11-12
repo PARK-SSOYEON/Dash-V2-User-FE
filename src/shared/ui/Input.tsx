@@ -8,11 +8,11 @@ const containerVariants = cva(containerBase, {
     variants: {
         mode: {
             mono:
-                "gradient-border bg-white text-gray-500 focus-within:ring-offset-2 focus-within:ring-offset-white ",
+                "gradient-border bg-white text-(--color-gray-500) focus-within:ring-offset-2 focus-within:ring-offset-white ",
             color_line:
-                "border border-blue-500 bg-white text-blue-600 focus-within:ring-offset-2 focus-within:ring-offset-white ",
+                "border border-(--color-blue-500) bg-white text-(--color-blue-600) focus-within:ring-offset-2 focus-within:ring-offset-white ",
             error:
-                "border border-red-500 bg-white text-red-600 focus-within:ring-offset-2 focus-within:ring-offset-white ",
+                "border border-(--color-red-500) bg-white text-(--color-red-600) focus-within:ring-offset-2 focus-within:ring-offset-white ",
         },
     },
     defaultVariants: {
@@ -100,7 +100,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>
                     >
                         <span>{label}</span>
                         {showError && errorMessage ? (
-                            <span className="text-red-500 text-xs whitespace-nowrap font-light ">{errorMessage}</span>
+                            <span className="text-(--color-red-500) text-xs whitespace-nowrap font-light ">{errorMessage}</span>
                         ) : null}
                     </div>
                 ) : null}

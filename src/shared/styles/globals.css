@@ -1,5 +1,6 @@
 @import "tailwindcss";
-@import "theme.css";
+@import "@fontsource/roboto";
+@import "./utilities.css";
 
 @layer base {
   body {
@@ -8,14 +9,45 @@
 }
 
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  --font-sans: "Roboto", "system-ui", "Avenir", "Helvetica", "Arial", "sans-serif";  line-height: 1.5;
   font-weight: 400;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Blue Colors */
+  --color-blue-50: #E9F1FD;
+  --color-blue-100: #D3E2FC;
+  --color-blue-200: #A8C5F9;
+  --color-blue-300: #7CA9F5;
+  --color-blue-400: #518CF2;
+  --color-blue-500: #256FEF;
+  --color-blue-600: #1E59BF;
+  --color-blue-700: #16438F;
+  --color-blue-800: #0F2C60;
+  --color-blue-900: #071630;
+
+  /* Gray Colors */
+  --color-gray-50: #FAFAFA;
+  --color-gray-100: #F1F1F1;
+  --color-gray-200: #D6D6D6;
+  --color-gray-300: #E4E4E4;
+  --color-gray-400: #9D9D9D;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #AAAAAA;
+
+  /* Red Colors */
+  --color-red-300: #F35242;
+  --color-red-400: #F20F0F;
+  --color-red-500: #C70D0D;
+
+  /* Green Colors */
+  --color-green-500: #26BE12;
+
+  /* Yellow Colors */
+  --color-yellow-500: #EFAF25;
 }
 
 html {

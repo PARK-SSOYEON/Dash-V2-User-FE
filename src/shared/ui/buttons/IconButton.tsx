@@ -10,10 +10,10 @@ const buttonVariants = cva(baseStyles, {
     variants: {
         mode: {
             mono:
-                "gradient-border bg-white text-gray-500 hover:bg-gray-50 " +
+                "gradient-border bg-white text-(--color-gray-500) hover:bg-(--color-gray-50) " +
                 "focus-visible:ring-offset-2 focus-visible:ring-offset-white",
             blue_line:
-                "border border-blue-500 bg-white text-blue-500 hover:bg-blue-50 " +
+                "border border-(--color-blue-500) bg-white text-(--color-blue-500) hover:bg-(--color-blue-50) " +
                 "focus-visible:ring-offset-2 focus-visible:ring-offset-white",
         },
     },

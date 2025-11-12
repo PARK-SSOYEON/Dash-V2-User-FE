@@ -20,7 +20,7 @@ export const SlideSelector: React.FC<SlideSelectorProps> = ({ options, value, on
     return (
         <nav
             className={
-                "relative rounded-full bg-white border border-gray-300 px-1 py-1 " +
+                "relative rounded-full bg-white border border-(--color-gray-300) px-1 py-1 " +
                 (className ?? "")
             }
             aria-label="Slide selector"
@@ -31,7 +31,7 @@ export const SlideSelector: React.FC<SlideSelectorProps> = ({ options, value, on
                         aria-hidden
                         className={
                             "absolute top-1/2 left-0 pointer-events-none rounded-full " +
-                            " transition-[left,transform,opacity,background-color,box-shadow] duration-250 ease-[cubic-bezier(0.34,1.2,0.68,1)] will-change-[left,transform,opacity] bg-blue-500"
+                            " transition-[left,transform,opacity,background-color,box-shadow] duration-250 ease-[cubic-bezier(0.34,1.2,0.68,1)] will-change-[left,transform,opacity] bg-(--color-blue-500)"
                         }
                         style={{
                             width: `min(180px, calc(100%/${options.length} - 12px))`,
@@ -53,15 +53,15 @@ export const SlideSelector: React.FC<SlideSelectorProps> = ({ options, value, on
                     const isDisabled = Array.isArray(disabledOptions) && disabledOptions.includes(opt);
 
                     const colorClass = isDisabled
-                        ? "text-gray-400"
-                        : (hasPressed ? (isOptPressed ? "text-white" : "text-gray-600") : (isActive ? "text-white" : "text-gray-600"));
+                        ? "text-(--color-gray-400)"
+                        : (hasPressed ? (isOptPressed ? "text-white" : "text-(--color-gray-600)") : (isActive ? "text-white" : "text-gray-600"));
 
                     return (
                         <li key={opt} className="flex">
                             <button
                                 type="button"
                                 className={
-                                    "relative z-10 grid place-items-center w-full rounded-full select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 " +
+                                    "relative z-10 grid place-items-center w-full rounded-full select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-(--color-blue-400) " +
                                     (isDisabled ? "cursor-not-allowed opacity-60" : "")
                                 }
                                 aria-pressed={isActive}

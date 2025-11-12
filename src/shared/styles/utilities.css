@@ -1,9 +1,10 @@
-/*noinspection CssInvalidFunction*/
-@layer utilities {
-    .gradient-border {
-        position: relative;
-        isolation: isolate;
-    }
+@utility gradient-border {
+    position: relative;
+    isolation: isolate;
+    border-radius: 9999px;
+}
+
+@layer components {
     .gradient-border::before {
         content: "";
         position: absolute;
@@ -11,7 +12,7 @@
         border-radius: inherit;
         background: linear-gradient(135deg, #F1F1F1, #D6D6D6, #E4E4E4);
         padding: 1px; /* border width */
-        -webkit-mask: -webkit-linear-gradient(#000, #000) content-box, -webkit-linear-gradient(#000, #000);
+        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
         -webkit-mask-composite: xor;
         mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
         mask-composite: exclude;
