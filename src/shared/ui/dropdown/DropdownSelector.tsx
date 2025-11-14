@@ -1,6 +1,6 @@
 import React, {useState, useMemo, useRef, useEffect} from 'react';
 import {cva} from 'class-variance-authority';
-import Option from './Option';
+import {Option} from './Option';
 import {Icon} from "../Icon.tsx";
 
 interface Item {
@@ -30,12 +30,12 @@ const inputContainerVariants = cva(
     }
 );
 
-const DropdownSelector: React.FC<DropdownSelectorProps> = ({
-                                                               placeholder,
-                                                               searchPlaceholder,
-                                                               data,
-                                                               onSelect,
-                                                           }) => {
+export const DropdownSelector: React.FC<DropdownSelectorProps> = ({
+                                                                      placeholder,
+                                                                      searchPlaceholder,
+                                                                      data,
+                                                                      onSelect,
+                                                                  }) => {
     const [isFocused, setIsFocused] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedItem, setSelectedItem] = useState<Item | null>(null);
@@ -58,22 +58,16 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
 
     // Filtered and sorted options
     const filteredOptions = useMemo(() => {
-        let results = data.filter(item =>
-            item.label.toLowerCase().includes(searchTerm.toLowerCase())
-        );
+        const normalizedQuery = searchTerm.trim().toLowerCase();
 
-        if (selectedItem && searchTerm.length > 0) {
-            const isSelectedInResults = results.some(item => item.id === selectedItem.id);
-            if (!isSelectedInResults) {
-                results = [selectedItem, ...results];
-            }
+        if (normalizedQuery.length === 0) {
+            return [];
         }
 
-        //중복 제거
-        const uniqueResults = Array.from(new Map(results.map(item => [item.id, item])).values());
-
-        return uniqueResults;
-    }, [data, searchTerm, selectedItem]);
+        return data.filter((item) =>
+            item.label.toLowerCase().includes(normalizedQuery)
+        );
+    }, [data, searchTerm]);
 
     // Handle selection of an item
     const handleSelect = (item: Item) => {
@@ -93,7 +87,7 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
         <div className="relative w-full" ref={containerRef}>
             {/* 1. Main Input/Display Area */}
             <div
-                className={inputContainerVariants({ isActive })}
+                className={inputContainerVariants({isActive})}
                 onClick={() => setIsFocused(true)}
             >
                 {isSearchActive ? (
@@ -111,7 +105,6 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
                     </span>
                 )}
 
-                {/* Chevron Icon */}
                 <div className={`ml-2 ${activeTextClass}`}>
                     {isFocused ? (
                         <Icon name={"upArrow"} size={24}/>
@@ -123,8 +116,8 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
 
             {/* 2. Dropdown Panel */}
             {isFocused && (
-                <div className="absolute z-10 w-full mt-3 p-3 rounded-lg ">
-                    <div className="flex flex-col gap-2"> {/* gap-2 for 8px spacing */}
+                <div className="absolute z-10 w-full mt-3 p-3 ">
+                    <div className="flex flex-col gap-2 overflow-y-auto max-h-60 scrollbar-none">
                         {filteredOptions.length > 0 ? (
                             filteredOptions.map((item) => (
                                 <Option
@@ -143,5 +136,3 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
         </div>
     );
 };
-
-export default DropdownSelector;

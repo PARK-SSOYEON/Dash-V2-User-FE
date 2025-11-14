@@ -23,7 +23,7 @@ const optionVariants = cva(
     }
 );
 
-const Option: React.FC<OptionProps> = ({ label, isSelected, onClick }) => {
+export const Option: React.FC<OptionProps> = ({ label, isSelected, onClick }) => {
     return (
         <div
             className={cn(
@@ -36,5 +36,3 @@ const Option: React.FC<OptionProps> = ({ label, isSelected, onClick }) => {
         </div>
     );
 };
-
-export default Option;

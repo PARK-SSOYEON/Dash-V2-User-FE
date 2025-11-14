@@ -3,6 +3,7 @@ import {cva} from "class-variance-authority";
 import {SignHeader} from "./SignHeader.tsx";
 import {InputGroup} from "../../../shared/ui/input/InputGroup.tsx";
 import {cn} from "../../../shared/lib/cn.ts";
+import {DropdownSelector} from "../../../shared/ui/dropdown/DropdownSelector.tsx";
 
 type QuestionId = 1 | 2 | 3;
 
@@ -17,6 +18,16 @@ const questionTitleVariants = cva("text-xl font-bold", {
         done: false,
     },
 });
+
+const sampleData = [
+    { id: '1', label: '선택자 1' },
+    { id: '2', label: '선택자 2' },
+    { id: '3', label: '검색어에 해당하는 선택자 1' },
+    { id: '4', label: '검색어에 해당하는 선택자 2' },
+    { id: '6', label: '검색어에 해당하는 선택자 3' },
+    { id: '7', label: '검색어에 해당하는 선택자 4' },
+    { id: '5', label: '다른 항목' },
+];
 
 
 function isValidBirthDate(input: string): boolean {
@@ -70,8 +81,6 @@ export function SignForm() {
         const t = setTimeout(() => setIntroVisible(false), 3000);
         return () => clearTimeout(t);
     }, []);
-
-
 
     return (
         <div
@@ -196,12 +205,12 @@ export function SignForm() {
                                 </button>
 
                                 {isActive && id === 3 && (
-                                    // <DropdownSelector
-                                    //     label="소속단체"
-                                    //     value={affiliation}
-                                    //     onChange={(v) => setAffiliation(v)}
-                                    // />
-                                    <div>dropdown</div>
+                                    <DropdownSelector
+                                        placeholder="선택값을 입력해주세요"
+                                        searchPlaceholder="검색 키워드를 입력해주세요"
+                                        data={sampleData}
+                                        onSelect={setAffiliation}
+                                    />
                                 )}
 
                                 {isActive && id !== 3 && (
