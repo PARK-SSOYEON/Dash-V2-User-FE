@@ -5,21 +5,22 @@ import {LoginBlob} from "./shared/ui/backgroud/LoginBlob.tsx";
 
 function App() {
     const location = useLocation();
-    const hideMenuPaths = ["/login", "/onboarding"];
+    const hideMenuPaths = ["/login", "/onboarding", "/sign"];
     const isLogin = location.pathname === "/login";
+    const isSign = location.pathname ==="/sign";
 
     const shouldHideMenu = hideMenuPaths.includes(location.pathname);
 
     return (
         <>
             {/*<Header/>*/}
-            {isLogin && (
+            {(isLogin || isSign ) && (
                 <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
                     <LoginBlob
                         className="absolute"
                         style={{
                             left: "48%",
-                            bottom: "-10%"
+                            bottom: "-15%"
                         }}
                     />
                 </div>

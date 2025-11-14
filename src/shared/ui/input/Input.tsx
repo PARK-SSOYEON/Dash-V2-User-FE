@@ -1,6 +1,6 @@
 import * as React from "react";
 import {cva, type VariantProps} from "class-variance-authority";
-import {cn} from "../lib/cn.ts";
+import {cn} from "../../lib/cn.ts";
 
 const containerBase = "relative flex-1 rounded-full px-1 pt-5 pb-1 ";
 
@@ -33,6 +33,7 @@ const labelFloating = "top-2 translate-y-0 text-xs font-semibold ";
 export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, "size"> &
     VariantProps<typeof containerVariants> & {
     errorMessage?: string;
+    errorTrigger?: boolean;
     autoMode?: boolean; //false: 직접 mode 선택 가능
     label?: string; //placeholder
     errorAutoClearMs?: number;
@@ -46,6 +47,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>
             mode: modeProp,
             label,
             errorMessage,
+            errorTrigger,
             errorAutoClearMs = 3000,
             autoMode = true,
             value,
@@ -58,7 +60,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>
         ref
     ) => {
         const [focused, setFocused] = React.useState(false);
-        const [internalValue, setInternalValue] = React.useState < string | number | readonly string[] | undefined > (
+        const [internalValue, setInternalValue] = React.useState <string | number | readonly string[] | undefined>(
             defaultValue
         );
         const [showError, setShowError] = React.useState(false);
@@ -80,7 +82,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>
             return () => {
                 if (errorTimer.current) window.clearTimeout(errorTimer.current);
             };
-        }, [errorMessage, errorAutoClearMs]);
+        }, [errorTrigger]);
 
         const computedMode: NonNullable<InputProps["mode"]> = (() => {
             if (showError) return "error";
@@ -100,7 +102,8 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>
                     >
                         <span>{label}</span>
                         {showError && errorMessage ? (
-                            <span className="text-(--color-red-500) text-xs whitespace-nowrap font-light ">{errorMessage}</span>
+                            <span
+                                className="text-(--color-red-500) text-xs whitespace-nowrap font-light ">{errorMessage}</span>
                         ) : null}
                     </div>
                 ) : null}

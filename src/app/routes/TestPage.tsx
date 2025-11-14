@@ -4,7 +4,7 @@ import {type IssueItem, MenuInput} from "../../shared/ui/MenuInput.tsx";
 import {SlideSelector} from "../../shared/ui/SlideSelector.tsx";
 import {CardSlider} from "../../shared/ui/CardSlider.tsx";
 import {Button} from "../../shared/ui/buttons/Button.tsx";
-import {Input} from "../../shared/ui/Input.tsx";
+import {Input} from "../../shared/ui/input/Input.tsx";
 import {IconButton} from "../../shared/ui/buttons/IconButton.tsx";
 import {CouponRequestBlock} from "../../shared/ui/CouponRequestBlock.tsx";
 

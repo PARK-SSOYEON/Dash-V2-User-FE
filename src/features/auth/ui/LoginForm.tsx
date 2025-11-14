@@ -1,9 +1,8 @@
 import * as React from "react";
 import {IconButton} from "../../../shared/ui/buttons/IconButton.tsx";
-import {Input} from "../../../shared/ui/Input.tsx";
 import {Button} from "../../../shared/ui/buttons/Button.tsx";
 import {LoginHeader, type HeaderStep} from "./LoginHeader.tsx";
-import {cn} from "../../../shared/lib/cn.ts";
+import {InputGroup} from "../../../shared/ui/input/InputGroup.tsx";
 
 type Step = "phone" | "otp" | "done";
 
@@ -66,78 +65,44 @@ export function LoginForm() {
             {/* 하단 단계 컨테이너 */}
             <div className="flex-1 w-full flex items-center">
                 {step === "phone" && (
-                    <div className="relative w-full flex items-center">
-                        <div className="transition-all duration-300 flex-1">
-                            <Input
-                                label="전화번호"
-                                value={phone}
-                                onChange={(e) => setPhone(formatPhone(e.target.value))}
-                                inputMode="tel"
-                                errorMessage={errorMsg}
-                                autoMode
-                                className={"transition-all duration-300 "}
-                            />
-                        </div>
-
-                        <div
-                            className={cn("transition-all duration-300 flex items-center justify-end",
-                                phoneValid ? "w-20" : "w-0")}
-                        >
-                            <IconButton
-                                mode="blue_line"
-                                icon="rightArrow"
-                                onClick={goNextFromPhone}
-                                className={cn("transition-opacity duration-300",
-                                    phoneValid ? "opacity-100" : "opacity-0")
-                                }
-                            />
-                        </div>
-                    </div>
+                    <InputGroup
+                        label="전화번호"
+                        value={phone}
+                        onChange={(e) => setPhone(formatPhone(e.target.value))}
+                        inputMode="tel"
+                        errorMessage={errorMsg}
+                        rightAction={{
+                            onClick: goNextFromPhone,
+                            visible: phoneValid,
+                            mode: "blue_line",
+                        }}
+                    />
                 )}
 
                 {step === "otp" && (
-                    <div className="flex flex-row relative w-full items-center ">
-                        <div
-                            className={cn("transition-all duration-300 flex items-center justify-start",
-                                !otpValid ? "w-20" : "w-0")}
-                        >
-                            <IconButton
-                                mode="mono"
-                                icon="leftArrow"
-                                onClick={() => setStep("phone")}
-                                className={cn("transition-opacity duration-300",
-                                    !otpValid ? "opacity-100" : "opacity-0")
-                                }
-                            />
-                        </div>
-
-                        <Input
-                            label="인증번호"
-                            value={otp}
-                            onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                            inputMode="numeric"
-                            errorMessage={errorMsg}
-                            className="pr-16"
-                        />
-
-                        <div
-                            className={cn("transition-all duration-300 flex items-center justify-end",
-                                otpValid ? "w-20" : "w-0")}
-                        >
-                            <IconButton
-                                mode="blue_line"
-                                icon="rightArrow"
-                                onClick={goNextFromOtp}
-                                className={cn("transition-opacity duration-300",
-                                    otpValid ? "opacity-100" : "opacity-0")
-                                }
-                            />
-                        </div>
-                    </div>
+                    <InputGroup
+                        label="인증번호"
+                        value={otp}
+                        onChange={(e) =>
+                            setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))
+                        }
+                        inputMode="numeric"
+                        errorMessage={errorMsg}
+                        leftAction={{
+                            onClick: () => setStep("phone"),
+                            visible: !otpValid,
+                            mode: "mono",
+                        }}
+                        rightAction={{
+                            onClick: goNextFromOtp,
+                            visible: otpValid,
+                            mode: "blue_line",
+                        }}
+                    />
                 )}
 
                 {step === "done" && (
-                    <div className="flex flex-row gap-6 items-center gap-4 w-full justify-center ">
+                    <div className="flex flex-row items-center gap-2 w-full justify-center ">
                         <IconButton
                             mode="mono"
                             icon="leftArrow"
