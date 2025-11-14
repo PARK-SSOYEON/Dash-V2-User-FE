@@ -107,9 +107,9 @@ export const DropdownSelector: React.FC<DropdownSelectorProps> = ({
 
                 <div className={`ml-2 ${activeTextClass}`}>
                     {isFocused ? (
-                        <Icon name={"upArrow"} size={24}/>
+                        <Icon name={"upChevron"} size={24}/>
                     ) : (
-                        <Icon name={"downArrow"} size={24}/>
+                        <Icon name={"downChevron"} size={24}/>
                     )}
                 </div>
             </div>

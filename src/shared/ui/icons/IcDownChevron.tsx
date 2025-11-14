@@ -1,6 +1,6 @@
 import type {SVGProps} from "react";
 
-export const IcDownArrow = (props: SVGProps<SVGSVGElement>) => (
+export const IcDownChevron = (props: SVGProps<SVGSVGElement>) => (
     <svg
         viewBox="0 0 24 24"
         fill="none"

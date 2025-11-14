@@ -1,7 +1,7 @@
 import {cn} from "../../../shared/lib/cn.ts";
 import * as React from "react";
 
-export function SignHeader () {
+export function SignHeader({finalMode = false}) {
     const [topVisible, setTopVisible] = React.useState(!!top);
 
     React.useEffect(() => {
@@ -13,7 +13,7 @@ export function SignHeader () {
 
     return (
         <div
-            className={cn("relative overflow-hidden mt-32 transition-all duration-700", topVisible ? "h-80" : "h-48")}>
+            className={cn("relative overflow-hidden mt-32 transition-all duration-700", topVisible ? "h-80" : "h-32")}>
             {/* 첫 번째 문구 */}
             <div
                 className={cn(
@@ -31,13 +31,26 @@ export function SignHeader () {
             {/* 두 번째 문구 */}
             <div
                 className={cn(
-                    "absolute inset-0 flex flex-col transition-all duration-900 ease-in-out text-3xl font-medium gap-2 text-black",
-                    topVisible ? "translate-y-40" : "translate-y-0"
+                    "absolute inset-0 flex flex-col text-3xl font-medium gap-2 text-black transition-all duration-700 ease-in-out",
+                    topVisible ? "translate-y-40" : "translate-y-0",
+                    finalMode ? "opacity-0 " : "opacity-100 "
                 )}
             >
                 <span>원활한 이용을 위해</span>
                 <span>3가지 질문에</span>
                 <span>답해주세요</span>
+            </div>
+
+            {/* 세 번째 문구 */}
+            <div
+                className={cn(
+                    "absolute inset-0 flex flex-col text-3xl font-medium gap-2 text-black transition-all duration-700 ease-in-out",
+                    finalMode? "opacity-100 " : "opacity-0"
+                )}
+            >
+                <span>감사합니다!</span>
+                <span>곧 서비스 홈으로</span>
+                <span>이동할게요</span>
             </div>
         </div>
     )
