@@ -8,7 +8,7 @@ const containerVariants = cva(containerBase, {
     variants: {
         mode: {
             mono:
-                "gradient-border bg-white text-(--color-gray-500) focus-within:ring-offset-2 focus-within:ring-offset-white ",
+                "gradient-border bg-white/60 text-(--color-gray-500) focus-within:ring-offset-2 focus-within:ring-offset-white ",
             color_line:
                 "border border-(--color-blue-500) bg-white text-(--color-blue-600) focus-within:ring-offset-2 focus-within:ring-offset-white ",
             error:
@@ -21,7 +21,7 @@ const containerVariants = cva(containerBase, {
 });
 
 const inputStyles =
-    "w-full bg-transparent outline-none placeholder-transparent font-semibold text-lg leading-7 px-8 pt-2 pb-1 ";
+    "w-full outline-none placeholder-transparent font-semibold text-lg leading-7 px-8 pt-2 pb-1 ";
 
 
 const labelBase =

@@ -4,16 +4,16 @@ import {cva, type VariantProps} from "class-variance-authority";
 import {Icon} from "../Icon.tsx";
 import type {IconName} from "../icons/IconRegistry.ts";
 
-const baseStyles = "flex items-center justify-center rounded-full px-0 py-5 text-base gap-4 font-semibold p-0 gap-0 aspect-square h-14 w-14 rounded-full"
+const baseStyles = "flex items-center justify-center rounded-full px-0 py-5 text-base gap-4 font-semibold p-0 gap-0 aspect-square bg-white/80 h-14 w-14 rounded-full"
 
 const buttonVariants = cva(baseStyles, {
     variants: {
         mode: {
             mono:
-                "gradient-border bg-white text-(--color-gray-500) hover:bg-(--color-gray-50) " +
+                "gradient-border text-(--color-gray-500) hover:bg-(--color-gray-50) " +
                 "focus-visible:ring-offset-2 focus-visible:ring-offset-white",
             blue_line:
-                "border border-(--color-blue-500) bg-white text-(--color-blue-500) hover:bg-(--color-blue-50) " +
+                "border border-(--color-blue-500) text-(--color-blue-500) hover:bg-(--color-blue-50) " +
                 "focus-visible:ring-offset-2 focus-visible:ring-offset-white",
         },
     },
