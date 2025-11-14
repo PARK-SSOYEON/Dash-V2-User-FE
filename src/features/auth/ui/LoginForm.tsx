@@ -3,6 +3,7 @@ import {IconButton} from "../../../shared/ui/buttons/IconButton.tsx";
 import {Input} from "../../../shared/ui/Input.tsx";
 import {Button} from "../../../shared/ui/buttons/Button.tsx";
 import {LoginHeader, type HeaderStep} from "./LoginHeader.tsx";
+import {cn} from "../../../shared/lib/cn.ts";
 
 type Step = "phone" | "otp" | "done";
 
@@ -64,120 +65,91 @@ export function LoginForm() {
 
             {/* 하단 단계 컨테이너 */}
             <div className="flex-1 w-full flex items-center">
-                <div className="w-full">
-                    {step === "phone" && (
-                        <div className="relative flex items-center gap-4">
-                            <div
-                                className={
-                                    phoneValid
-                                        ? "transition-all duration-300 flex-1"
-                                        : "transition-all duration-300 flex-1"
+                {step === "phone" && (
+                    <div className="relative w-full flex items-center">
+                        <div className="transition-all duration-300 flex-1">
+                            <Input
+                                label="전화번호"
+                                value={phone}
+                                onChange={(e) => setPhone(formatPhone(e.target.value))}
+                                inputMode="tel"
+                                errorMessage={errorMsg}
+                                autoMode
+                                className={"transition-all duration-300 "}
+                            />
+                        </div>
+
+                        <div
+                            className={cn("transition-all duration-300 flex items-center justify-end",
+                                phoneValid ? "w-20" : "w-0")}
+                        >
+                            <IconButton
+                                mode="blue_line"
+                                icon="rightArrow"
+                                onClick={goNextFromPhone}
+                                className={cn("transition-opacity duration-300",
+                                    phoneValid ? "opacity-100" : "opacity-0")
                                 }
-                            >
-                                <Input
-                                    label="전화번호"
-                                    value={phone}
-                                    onChange={(e) => setPhone(formatPhone(e.target.value))}
-                                    inputMode="tel"
-                                    errorMessage={errorMsg}
-                                    autoMode
-                                    className={
-                                        phoneValid
-                                            ? "transition-all duration-300 "
-                                            : "transition-all duration-300 "
-                                    }
-                                />
-                            </div>
+                            />
+                        </div>
+                    </div>
+                )}
 
-                            <div
-                                className={
-                                    phoneValid
-                                        ? "transition-all duration-300 w-14 h-10 flex items-center justify-center"
-                                        : "transition-all duration-300 w-0 h-10 flex items-center justify-center"
+                {step === "otp" && (
+                    <div className="flex flex-row relative w-full items-center ">
+                        <div
+                            className={cn("transition-all duration-300 flex items-center justify-start",
+                                !otpValid ? "w-20" : "w-0")}
+                        >
+                            <IconButton
+                                mode="mono"
+                                icon="leftArrow"
+                                onClick={() => setStep("phone")}
+                                className={cn("transition-opacity duration-300",
+                                    !otpValid ? "opacity-100" : "opacity-0")
                                 }
-                            >
-                                <IconButton
-                                    mode="blue_line"
-                                    icon="rightArrow"
-                                    onClick={goNextFromPhone}
-                                    className={
-                                        phoneValid
-                                            ? "opacity-100 transition-opacity duration-300"
-                                            : "opacity-0 pointer-events-none transition-opacity duration-300"
-                                    }
-                                />
-                            </div>
+                            />
                         </div>
-                    )}
 
-                    {step === "otp" && (
-                        <div className="mt-10 flex flex-col">
-                            <div className="relative w-full flex items-center ">
-                                <div
-                                    className={
-                                        !otpValid
-                                            ? "transition-all duration-300 w-17 h-10 flex items-center ustify-start"
-                                            : "transition-all duration-300 w-0 h-10 flex items-center justify-center"
-                                    }
-                                >
-                                    <IconButton
-                                        mode="mono"
-                                        icon="leftArrow"
-                                        onClick={() => setStep("phone")}
-                                        className={
-                                            !otpValid
-                                                ? "opacity-100 transition-opacity duration-300"
-                                                : "opacity-0 pointer-events-none transition-opacity duration-300"
-                                        }
-                                    />
-                                </div>
-                                <Input
-                                    label="인증번호"
-                                    value={otp}
-                                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                                    inputMode="numeric"
-                                    errorMessage={errorMsg}
-                                    className="pr-16"
-                                />
-                                <div
-                                    className={
-                                        otpValid
-                                            ? "transition-all duration-300 w-17 h-10 flex items-center justify-end"
-                                            : "transition-all duration-300 w-0 h-10 flex items-center justify-center"
-                                    }
-                                >
-                                    <IconButton
-                                        mode="blue_line"
-                                        icon="rightArrow"
-                                        onClick={goNextFromOtp}
-                                        className={
-                                            otpValid
-                                                ? "opacity-100 transition-opacity duration-300"
-                                                : "opacity-0 pointer-events-none transition-opacity duration-300"
-                                        }
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    )}
+                        <Input
+                            label="인증번호"
+                            value={otp}
+                            onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                            inputMode="numeric"
+                            errorMessage={errorMsg}
+                            className="pr-16"
+                        />
 
-                    {step === "done" && (
-                        <div className="mt-20 flex flex-col items-center gap-6">
-                            <div className="flex items-center gap-3 w-full justify-center mt-8">
-                                <IconButton
-                                    mode="mono"
-                                    icon="leftArrow"
-                                    onClick={() => setStep("otp")}
-                                />
-                                <Button
-                                    mode="color_fill"
-                                    icon={"identify"}
-                                    iconPosition='left'
-                                > 000으로 계속 </Button>
-                            </div>
+                        <div
+                            className={cn("transition-all duration-300 flex items-center justify-end",
+                                otpValid ? "w-20" : "w-0")}
+                        >
+                            <IconButton
+                                mode="blue_line"
+                                icon="rightArrow"
+                                onClick={goNextFromOtp}
+                                className={cn("transition-opacity duration-300",
+                                    otpValid ? "opacity-100" : "opacity-0")
+                                }
+                            />
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
+
+                {step === "done" && (
+                    <div className="flex flex-row gap-6 items-center gap-4 w-full justify-center ">
+                        <IconButton
+                            mode="mono"
+                            icon="leftArrow"
+                            onClick={() => setStep("otp")}
+                        />
+                        <Button
+                            mode="color_fill"
+                            icon={"identify"}
+                            iconPosition='left'
+                        > 000으로 계속 </Button>
+                    </div>
+                )}
             </div>
         </div>
     );

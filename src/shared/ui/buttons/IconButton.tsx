@@ -4,7 +4,7 @@ import {cva, type VariantProps} from "class-variance-authority";
 import {Icon} from "../Icon.tsx";
 import type {IconName} from "../icons/IconRegistry.ts";
 
-const baseStyles = "flex items-center justify-center rounded-full px-0 py-5 text-base gap-4 font-semibold p-0 gap-0 aspect-square bg-white/80 h-14 w-14 rounded-full"
+const baseStyles = "flex items-center justify-center rounded-full px-0 py-5 text-base gap-4 font-semibold p-0 gap-0 aspect-square bg-white/80 h-16 w-16 rounded-full"
 
 const buttonVariants = cva(baseStyles, {
     variants: {
