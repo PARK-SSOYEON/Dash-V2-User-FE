@@ -7,11 +7,15 @@ import {IcIssue} from "./IcIssue";
 import {IcNotification} from "./IcNotification";
 import {IcProfile} from "./IcProfile";
 import {IcRight} from "./IcRight.tsx";
+import {IcDownArrow} from "./IcDownArrow.tsx";
+import {IcUpArrow} from "./IcUpArrow.tsx";
 
 export const IconRegistry = {
     identify: IcIdentify,
     leftArrow: IcLeftArrow,
     rightArrow: IcRightArrow,
+    downArrow: IcDownArrow,
+    upArrow: IcUpArrow,
     trashcan: IcTrashcan,
     coupon: IcCoupon,
     issue: IcIssue,
