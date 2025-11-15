@@ -15,7 +15,11 @@ const items: Item[] = [
     {to: "/account", icon: "profile"},
 ];
 
-export const BottomMenu = React.memo(function BottomMenu() {
+type BottomMenuProps = {
+    visible?: boolean;
+};
+
+export const BottomMenu = React.memo(function BottomMenu({visible=true}: BottomMenuProps) {
     const [pressedKey, setPressedKey] = React.useState<string | null>(null);
 
     const location = useLocation();
@@ -27,7 +31,10 @@ export const BottomMenu = React.memo(function BottomMenu() {
 
     return (
         <nav
-            className="fixed left-1/2 -translate-x-1/2 rounded-full bg-white/60 supports-[backdrop-filter]:bg-white/50 backdrop-blur-md shadow-[0_0_2px_rgba(0,0,0,0.25)] z-[100] px-4 pointer-events-none"
+            className={"fixed left-1/2 -translate-x-1/2 rounded-full bg-white/60 supports-[backdrop-filter]:bg-white/50 backdrop-blur-md shadow-[0_0_2px_rgba(0,0,0,0.25)] z-[100] px-4 pointer-events-none"+
+                "transition-transform duration-300 ease-out " +
+                (visible ? " translate-y-0 " : " translate-y-[150%] ")
+            }
             style={{
                 width: "min(calc(100vw - (var(--gutter,24px) * 2)), calc(var(--container-max,450px) - (var(--gutter,24px) * 2)))",
                 bottom: "max(1.5rem, env(safe-area-inset-bottom))",

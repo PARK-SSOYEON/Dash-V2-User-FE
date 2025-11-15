@@ -1,4 +1,3 @@
-// SegmentedToggle.tsx
 import React, {useState} from "react";
 import {cva} from "class-variance-authority";
 import {cn} from "../../lib/cn.ts";
@@ -45,11 +44,9 @@ export const ToggleButton: React.FC<SegmentedToggleProps> = ({
     const hasSelection = value !== null;
 
     const handleClick = (side: Exclude<ToggleSide, null>) => {
-        setValue((prev) => {
-            const next: ToggleSide = prev === side ? null : side;
-            onChange?.(next);
-            return next;
-        });
+        const next: ToggleSide = value === side ? null : side;
+        setValue(next);
+        onChange?.(next);
     };
 
     const sliderPosition =

@@ -13,10 +13,10 @@ const buttonVariants = cva(baseStyles, {
                 "gradient-border bg-white text-(--color-gray-500) hover:bg-(--color-gray-50) " +
                 "focus-visible:ring-offset-2 focus-visible:ring-offset-white",
             blue_line:
-                "border border-(--color-blue-500) bg-white text-(--color-blue-500) hover:bg-(--color-blue-50) " +
+                "border border-(--color-blue-500) bg-white/60 text-(--color-blue-500) hover:bg-(--color-blue-50) " +
                 "focus-visible:ring-offset-2 focus-visible:ring-offset-white",
             red_line:
-                "border border-(--color-red-500) bg-white text-(--color-red-400) hover:bg-red-50" +
+                "border border-(--color-red-500) bg-white/60 text-(--color-red-400) hover:bg-red-50" +
                 "focus-visible:ring-offset-2 focus-visible:ring-offset-white",
             color_fill:
                 "bg-(--color-blue-500) text-white hover:bg-(--color-blue-600) " +

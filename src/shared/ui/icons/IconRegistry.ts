@@ -10,6 +10,8 @@ import {IcRight} from "./IcRight.tsx";
 import {IcDownChevron} from "./IcDownChevron.tsx";
 import {IcUpChevron} from "./IcUpChevron.tsx";
 import {IcRightChevron} from "./IcRightChevron.tsx";
+import {IcSelect} from "./IcSelect.tsx";
+import {IcList} from "./IcList.tsx";
 
 export const IconRegistry = {
     identify: IcIdentify,
@@ -24,6 +26,8 @@ export const IconRegistry = {
     notification: IcNotification,
     profile: IcProfile,
     right: IcRight,
+    select: IcSelect,
+    list: IcList,
 }
 
 export type IconName = keyof typeof IconRegistry

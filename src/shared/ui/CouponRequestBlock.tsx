@@ -36,7 +36,7 @@ const couponRequestBlock = cva(
             mode: {
                 normal: 'cursor-pointer',
                 view: 'cursor-default',
-                select: '',
+                select: 'cursor-pointer',
             },
         },
         defaultVariants: {
@@ -47,21 +47,21 @@ const couponRequestBlock = cva(
 );
 
 export const CouponRequestBlock = ({
-                                       mode,
-                                       selected = false,
-                                       onClick,
-                                       title,
-                                       subtitle,
-                                       itemCount,
-                                       amount,
-                                       statusLabel,
-                                   }: CouponRequestBlockProps) => {
-    const isNormal = mode === 'normal';
+    mode,
+    selected = false,
+    onClick,
+    title,
+    subtitle,
+    itemCount,
+    amount,
+    statusLabel,
+}: CouponRequestBlockProps) => {
+    const isClickable = mode !== 'view';
     const borderSelected = selected && mode === 'select';
     const colorClass = statusColorClassMap[statusLabel] ?? 'text-(--color-gray-500)';
 
     const baseClasses = cn(
-        couponRequestBlock({selected: borderSelected, mode})
+        couponRequestBlock({ selected: borderSelected, mode })
     );
 
     const detailText = [
@@ -72,7 +72,11 @@ export const CouponRequestBlock = ({
         .join('  \u00B7  '); // 중점 구분자
 
     return (
-        <div className={baseClasses} onClick={isNormal ? onClick : undefined} role={isNormal ? 'button' : undefined}>
+        <div
+            className={baseClasses}
+            onClick={isClickable ? onClick : undefined}
+            role={isClickable ? 'button' : undefined}
+        >
             {/* 왼쪽 텍스트 영역 */}
             <div className="min-w-0">
                 <div className="text-black text-xl font-bold truncate">{title}</div>

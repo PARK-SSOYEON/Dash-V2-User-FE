@@ -2,6 +2,7 @@ import {Outlet, useLocation} from "react-router-dom";
 import Layout from "./app/widget/layout.tsx";
 import {BottomMenu} from "./app/widget/BottomMenu.tsx";
 import {LoginBlob} from "./shared/ui/backgroud/LoginBlob.tsx";
+import {useUIStore} from "./shared/model/uiStore.ts";
 
 function App() {
     const location = useLocation();
@@ -9,7 +10,9 @@ function App() {
     const isLogin = location.pathname === "/login";
     const isSign = location.pathname ==="/sign";
 
-    const shouldHideMenu = hideMenuPaths.includes(location.pathname);
+    const shouldHideByRoute = hideMenuPaths.includes(location.pathname);
+    const bottomMenuVisible = useUIStore((s) => s.bottomMenuVisible);
+    const shouldShowBottomMenu = !shouldHideByRoute && bottomMenuVisible;
 
     return (
         <>
@@ -38,7 +41,7 @@ function App() {
                 <Outlet/>
             </Layout>
 
-            {!shouldHideMenu && <BottomMenu/>}
+            <BottomMenu visible={shouldShowBottomMenu} />
         </>
     )
 }
