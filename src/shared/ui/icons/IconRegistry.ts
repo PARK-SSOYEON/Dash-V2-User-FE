@@ -12,6 +12,7 @@ import {IcUpChevron} from "./IcUpChevron.tsx";
 import {IcRightChevron} from "./IcRightChevron.tsx";
 import {IcSelect} from "./IcSelect.tsx";
 import {IcList} from "./IcList.tsx";
+import {IcLeftChevron} from "./IcLeftChevron.tsx";
 
 export const IconRegistry = {
     identify: IcIdentify,
@@ -20,6 +21,7 @@ export const IconRegistry = {
     downChevron: IcDownChevron,
     upChevron: IcUpChevron,
     rightChevron: IcRightChevron,
+    leftChevron: IcLeftChevron,
     trashcan: IcTrashcan,
     coupon: IcCoupon,
     issue: IcIssue,

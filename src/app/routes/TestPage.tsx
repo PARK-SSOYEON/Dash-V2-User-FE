@@ -101,7 +101,6 @@ export default function TestPage() {
                     title="신입생 간식사업"
                     subtitle="호시 타코야끼"
                     itemCount={5}
-                    amount={250000}
                     statusLabel="발행"
                 />
 
@@ -110,7 +109,6 @@ export default function TestPage() {
                     onClick={() => console.log('hello')}
                     title="신입생 간식사업"
                     itemCount={5}
-                    amount={250000}
                     statusLabel="결제대기"
                 />
                 <MenuInput

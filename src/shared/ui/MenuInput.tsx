@@ -25,7 +25,7 @@ const rowClass = cva(
         variants: {
             mode: {
                 view: "grid-cols-[1fr_auto] gap-2 ",
-                edit: "grid-cols-[1fr_55px_35px] gap-2 ",
+                edit: "grid-cols-[1fr_60px_35px] gap-2 ",
             },
         },
         defaultVariants: {mode: "view"},

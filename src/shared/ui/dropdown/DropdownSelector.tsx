@@ -6,6 +6,7 @@ import {Icon} from "../Icon.tsx";
 interface Item {
     id: string;
     label: string;
+    phone?: string;
 }
 
 interface DropdownSelectorProps {
@@ -122,7 +123,7 @@ export const DropdownSelector: React.FC<DropdownSelectorProps> = ({
                             filteredOptions.map((item) => (
                                 <Option
                                     key={item.id}
-                                    label={item.label}
+                                    label={`${item.label} (${item?.phone})`}
                                     isSelected={item.id === selectedItem?.id}
                                     onClick={() => handleSelect(item)}
                                 />

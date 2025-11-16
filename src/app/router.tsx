@@ -5,6 +5,7 @@ import LoginRoute from "./routes/Login";
 import TestPage from "./routes/TestPage.tsx";
 import SignRoute from "./routes/Sign.tsx";
 import IssueRoute from "./routes/Issue.tsx";
+import IssueCreateRoute from "./routes/NewIssue.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -16,6 +17,7 @@ export const router = createBrowserRouter([
             {path: "sign", element: <SignRoute/>},
             {path: "coupon", element: <div>쿠폰 페이지</div>},
             {path: "issue", element: <IssueRoute/>},
+            {path: "issue/new", element: <IssueCreateRoute/>},
             {path: "settings", element: <div>환경설정</div>},
         ],
     },

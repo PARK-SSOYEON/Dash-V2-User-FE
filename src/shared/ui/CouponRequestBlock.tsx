@@ -5,6 +5,7 @@ import {cn} from "../lib/cn.ts";
 export type CouponRequestMode = 'normal' | 'select' | 'view';
 
 const statusColorClassMap: Record<string, string> = {
+    전송대기: 'text-(--color-gray-500)',
     대기중: 'text-(--color-gray-500)',
     결제대기: 'text-(--color-yellow-500)',
     발행: 'text-(--color-blue-500)',
@@ -21,8 +22,11 @@ export interface CouponRequestBlockProps {
     title: string;
     subtitle?: string;
     itemCount?: number;
-    amount?: number;
     statusLabel: string;
+
+    detailText?: string;                       // 3번째 줄 문구 직접 지정
+    highlightArea?: 'title' | 'subtitle' | 'detail'; // 파란색으로 강조할 줄
+    showStatus?: boolean;
 }
 
 const couponRequestBlock = cva(
@@ -47,29 +51,29 @@ const couponRequestBlock = cva(
 );
 
 export const CouponRequestBlock = ({
-    mode,
-    selected = false,
-    onClick,
-    title,
-    subtitle,
-    itemCount,
-    amount,
-    statusLabel,
-}: CouponRequestBlockProps) => {
+                                       mode,
+                                       selected = false,
+                                       onClick,
+                                       title,
+                                       subtitle,
+                                       itemCount,
+                                       statusLabel,
+                                       detailText,
+                                       highlightArea,
+                                       showStatus = true,
+                                   }: CouponRequestBlockProps) => {
     const isClickable = mode !== 'view';
     const borderSelected = selected && mode === 'select';
     const colorClass = statusColorClassMap[statusLabel] ?? 'text-(--color-gray-500)';
+    const isView = mode === 'view';
 
     const baseClasses = cn(
-        couponRequestBlock({ selected: borderSelected, mode })
+        couponRequestBlock({selected: borderSelected, mode})
     );
 
-    const detailText = [
-        typeof itemCount === 'number' ? `${itemCount}개 품목` : undefined,
-        typeof amount === 'number' ? `${amount.toLocaleString('ko-KR')}원` : undefined,
-    ]
-        .filter(Boolean)
-        .join('  \u00B7  '); // 중점 구분자
+    const detail =
+        detailText ??
+        (typeof itemCount === 'number' ? `${itemCount}개 품목` : undefined);
 
     return (
         <div
@@ -79,20 +83,58 @@ export const CouponRequestBlock = ({
         >
             {/* 왼쪽 텍스트 영역 */}
             <div className="min-w-0">
-                <div className="text-black text-xl font-bold truncate">{title}</div>
-                {subtitle ? <div className="mt-0.5 text-sm text-black truncate">{subtitle}</div> : null}
-                {detailText ? <div className="mt-2 text-base font-normal text-(--color-gray-400)">{detailText}</div> : null}
+                <div className={cn("text-xl font-bold truncate",
+                    !isView && "text-black",
+                    isView &&
+                    (highlightArea === 'title'
+                        ? "text-(--color-blue-500)"
+                        : "text-(--color-gray-500)")
+                )}>
+                    {title}
+                </div>
+
+                {subtitle ?
+                    <div
+                        className={cn(
+                            "mt-0.5 text-sm truncate",
+                            !isView && "text-black",
+                            isView &&
+                            (highlightArea === 'subtitle'
+                                ? "text-(--color-blue-500)"
+                                : "text-(--color-gray-500)")
+                        )}
+                    >
+                        {subtitle}
+                    </div>
+                    : null}
+
+                {detail ?
+                    <div
+                        className={cn(
+                            "mt-2 text-base font-normal",
+                            isView
+                                ? highlightArea === 'detail'
+                                    ? "text-(--color-blue-500)"
+                                    : "text-(--color-gray-400)"
+                                : "text-(--color-gray-400)"
+                        )}
+                    >
+                        {detail}
+                    </div>
+                    : null}
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
-        <span className={[
-            'text-xl font-bold',
-            colorClass,
-        ].join(' ')}>
-          {statusLabel}
-        </span>
-                <Icon name={"right"} size={24}/>
-            </div>
+            {showStatus && (
+                <div className="flex items-center gap-2 shrink-0">
+                    <span className={[
+                        'text-xl font-bold',
+                        colorClass,
+                    ].join(' ')}>
+                      {statusLabel}
+                    </span>
+                    {mode !== 'view' ? <Icon name="right" size={24} /> : null}
+                </div>
+            )}
         </div>
     );
 }

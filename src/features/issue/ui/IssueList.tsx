@@ -4,6 +4,7 @@ import {cn} from "../../../shared/lib/cn.ts";
 import {ToggleButton} from "../../../shared/ui/buttons/ToggleButton.tsx";
 import {Button} from "../../../shared/ui/buttons/Button.tsx";
 import {useUIStore} from "../../../shared/model/uiStore.ts";
+import {useNavigate} from "react-router-dom";
 
 // TODO - status back에 맞춰 수정
 export type IssueStatus = "WAITING" | "PAYMENT_PENDING" | "PUBLISHED" | "REJECTED" | "DISTRIBUTED" | "USED";
@@ -12,7 +13,6 @@ export interface IssueSummary {
     id: string;
     title: string;
     itemCount: number; // 품목 개수
-    amount?: number; // 총 금액
     status: IssueStatus;
 }
 
@@ -27,6 +27,8 @@ const ISSUE_STATUS_LABEL: Record<IssueStatus, string> = {
 };
 
 export function IssueList() {
+    const navigate = useNavigate();
+
     const [issues, setIssues] = React.useState<IssueSummary[]>([]);
     const [statusFilter, setStatusFilter] = React.useState<IssueStatus | "ALL">("ALL");
     const [selectMode, setSelectMode] = React.useState(false);
@@ -65,8 +67,7 @@ export function IssueList() {
     };
 
     const handleClickCreate = () => {
-        // TODO: 새 쿠폰 발행 요청 페이지로 이동 (라우터 연결 예정)
-        console.log("새 쿠폰발행 요청하기 클릭");
+        navigate('./new')
     };
 
     const filteredIssues =
@@ -76,7 +77,7 @@ export function IssueList() {
 
     return (
         <div className="flex flex-col pt-4 w-full gap-3">
-            <header className="mb-4 flex items-center justify-between">
+            <header className="flex items-center justify-between h-17">
                 <h1 className="text-3xl font-bold tracking-tight text-black">
                     발행목록
                 </h1>
@@ -125,7 +126,6 @@ export function IssueList() {
                         onClick={() => handleClickIssue(issue.id)}
                         title={issue.title}
                         itemCount={issue.itemCount}
-                        amount={issue.amount}
                         statusLabel={ISSUE_STATUS_LABEL[issue.status]}
                     />
                 ))}
@@ -166,49 +166,42 @@ const MOCK_ISSUES: IssueSummary[] = [
         id: "2",
         title: "신입생 간식사업",
         itemCount: 5,
-        amount: 250_000,
         status: "PAYMENT_PENDING",
     },
     {
         id: "3",
         title: "신입생 간식사업",
         itemCount: 5,
-        amount: 250_000,
         status: "PUBLISHED",
     },
     {
         id: "4",
         title: "신입생 간식사업",
         itemCount: 5,
-        amount: 250_000,
         status: "REJECTED",
     },
     {
         id: "8",
         title: "신입생 간식사업",
         itemCount: 5,
-        amount: 250_000,
         status: "REJECTED",
     },
     {
         id: "5",
         title: "신입생 간식사업",
         itemCount: 5,
-        amount: 250_000,
         status: "REJECTED",
     },
     {
         id: "6",
         title: "신입생 간식사업",
         itemCount: 5,
-        amount: 250_000,
         status: "REJECTED",
     },
     {
         id: "7",
         title: "신입생 간식사업",
         itemCount: 5,
-        amount: 250_000,
         status: "REJECTED",
     },
 ];

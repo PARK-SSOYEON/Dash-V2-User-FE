@@ -16,7 +16,6 @@ function App() {
 
     return (
         <>
-            {/*<Header/>*/}
             {(isLogin || isSign ) && (
                 <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
                     <LoginBlob
@@ -29,13 +28,14 @@ function App() {
                 </div>
             )}
 
-            <div className="fixed top-0 left-0 h-full z-[1]"
-                 style={{width: "calc((100vw - 450px) / 2)", backgroundColor: "rgb(245, 245, 245)"}}
-            />
-            <div className="fixed top-0 right-0 h-full z-[1]"
-                 style={{width: "calc((100vw - 450px) / 2)", backgroundColor: "rgb(245, 245, 245)"}}
-            />
-
+            <div
+              className="fixed inset-0 z-[0] pointer-events-none flex"
+              aria-hidden="true"
+            >
+              <div className="flex-1 bg-[rgb(245,245,245)]" />
+              <div className="w-[450px]" />
+              <div className="flex-1 bg-[rgb(245,245,245)]" />
+            </div>
 
             <Layout>
                 <Outlet/>
