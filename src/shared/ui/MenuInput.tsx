@@ -12,7 +12,7 @@ export type IssueItem = {
 export type MenuMode = "view" | "edit";
 
 const panelClass = cva(
-    "rounded-2xl p-6 bg-(--color-gray-50) border-(--color-gray-350)",
+    "rounded-2xl p-6 bg-(--color-gray-50) border border-(--color-gray-350)",
 );
 
 const headerCellClass = cva(

@@ -61,8 +61,7 @@ export function IssueList() {
                 }
             });
         } else {
-            // TODO: 추후 상세 페이지로 이동 등으로 교체
-            console.log("click issue", issueId);
+            navigate(`./${issueId}`)
         }
     };
 
