@@ -10,6 +10,7 @@ import IssueDetailRoute from "./routes/IssueDetailView.tsx";
 import SettingsRoute from "./routes/Settings.tsx";
 import SettingPhoneRoute from "./routes/SettingPhone.tsx";
 import SettingAffiliationRoute from "./routes/SettingAffiliation.tsx";
+import MyCouponRoute from "./routes/MyCoupon.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -19,7 +20,7 @@ export const router = createBrowserRouter([
             {index: true, element: <TestPage/>},
             {path: "login", element: <LoginRoute/>},
             {path: "sign", element: <SignRoute/>},
-            {path: "coupon", element: <div>쿠폰 페이지</div>},
+            {path: "coupon", element: <MyCouponRoute/>},
             {path: "issue", element: <IssueRoute/>},
             {path: "issue/new", element: <IssueCreateRoute/>},
             {path: "issue/:id", element: <IssueDetailRoute/>},

@@ -10,9 +10,10 @@ interface CardSliderProps {
 export const CardSlider: React.FC<CardSliderProps> = ({cards}) => {
     const [active, setActive] = useState(0);
     const total = cards.length;
-    const ratio = total > 1 ? active / (total - 1) : 0;
-    const leftPct = `${ratio * 100}%`;
-    const rightPct = `${(1 - ratio) * 100}%`;
+    const hasMultiple = total > 1;
+    const ratio = hasMultiple ? active / (total - 1) : 0;
+    const leftPct = hasMultiple ? `${ratio * 100}%` : '0%';
+    const rightPct = hasMultiple ? `${(1 - ratio) * 100}%` : '0%';
     return (
         <div style={{overflowX: "hidden"}}>
             <Swiper
@@ -28,12 +29,20 @@ export const CardSlider: React.FC<CardSliderProps> = ({cards}) => {
                 ))}
             </Swiper>
             <div className="custom-progress">
-                <div className="track"/>
-                <div className="segments">
-                    <div className="seg left" style={{width: leftPct}}/>
-                    <div className="seg active" key={active}/>
-                    <div className="seg right" style={{width: rightPct}}/>
-                </div>
+                {hasMultiple ? (
+                    <>
+                        <div className="track"/>
+                        <div className="segments">
+                            <div className="seg left" style={{width: leftPct}}/>
+                            <div className="seg active" key={active}/>
+                            <div className="seg right" style={{width: rightPct}}/>
+                        </div>
+                    </>
+                ) : (
+                    <div className="single-dot">
+                        <div className="seg active" />
+                    </div>
+                )}
             </div>
             <style>{`
   .custom-progress {
@@ -58,6 +67,16 @@ export const CardSlider: React.FC<CardSliderProps> = ({cards}) => {
     align-items: center;
     pointer-events: none; /* indicator is display-only */
     gap: 6px;
+  }
+  .custom-progress .single-dot {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
   }
   .custom-progress .seg.left,
   .custom-progress .seg.right {

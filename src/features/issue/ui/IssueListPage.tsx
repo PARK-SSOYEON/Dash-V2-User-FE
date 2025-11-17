@@ -26,7 +26,7 @@ const ISSUE_STATUS_LABEL: Record<IssueStatus, string> = {
     USED: "사용완료"
 };
 
-export function IssueList() {
+export function IssueListPage() {
     const navigate = useNavigate();
 
     const [issues, setIssues] = React.useState<IssueSummary[]>([]);
@@ -82,7 +82,7 @@ export function IssueList() {
                 </h1>
 
                 <ToggleButton
-                    leftIcon={"list"}
+                    leftIcon={"filter"}
                     rightIcon={"select"}
                     onChange={(value) => {
                         // null | "left" | "right"

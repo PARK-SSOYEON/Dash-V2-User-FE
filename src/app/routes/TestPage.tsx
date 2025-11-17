@@ -7,6 +7,7 @@ import {Button} from "../../shared/ui/buttons/Button.tsx";
 import {Input} from "../../shared/ui/input/Input.tsx";
 import {IconButton} from "../../shared/ui/buttons/IconButton.tsx";
 import {CouponRequestBlock} from "../../shared/ui/CouponRequestBlock.tsx";
+import {CouponRegisterCard} from "../../features/coupon/ui/CouponRegisterCard.tsx";
 
 export default function TestPage() {
     const [value, setValue] = React.useState("");
@@ -37,6 +38,8 @@ export default function TestPage() {
 
     return (
         <>
+            <CouponRegisterCard/>
+
             <div className="flex w-full flex-col gap-4">
                 <SlideSelector
                     options={['항목1', '항목2', '항목3']}

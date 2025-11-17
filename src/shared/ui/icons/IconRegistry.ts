@@ -11,8 +11,13 @@ import {IcDownChevron} from "./IcDownChevron.tsx";
 import {IcUpChevron} from "./IcUpChevron.tsx";
 import {IcRightChevron} from "./IcRightChevron.tsx";
 import {IcSelect} from "./IcSelect.tsx";
-import {IcList} from "./IcList.tsx";
+import {IcFilter} from "./IcFilter.tsx";
 import {IcLeftChevron} from "./IcLeftChevron.tsx";
+import {IcAddCoupon} from "./IcAddCoupon.tsx";
+import {IcCheck} from "./IcCheck.tsx";
+import {IcList} from "./IcList.tsx";
+import {IcLock} from "./IcLock.tsx";
+import {IcWarning} from "./IcWarning.tsx";
 
 export const IconRegistry = {
     identify: IcIdentify,
@@ -29,7 +34,12 @@ export const IconRegistry = {
     profile: IcProfile,
     right: IcRight,
     select: IcSelect,
+    filter: IcFilter,
     list: IcList,
+    addCoupon: IcAddCoupon,
+    check: IcCheck,
+    lock: IcLock,
+    warning: IcWarning
 }
 
 export type IconName = keyof typeof IconRegistry
