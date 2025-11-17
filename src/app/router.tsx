@@ -2,7 +2,6 @@ import {createBrowserRouter} from "react-router-dom";
 import App from "../App.tsx";
 
 import LoginRoute from "./routes/Login";
-import TestPage from "./routes/TestPage.tsx";
 import SignRoute from "./routes/Sign.tsx";
 import IssueRoute from "./routes/Issue.tsx";
 import IssueCreateRoute from "./routes/NewIssue.tsx";
@@ -18,7 +17,7 @@ export const router = createBrowserRouter([
         path: "/",
         element: <App/>,
         children: [
-            {index: true, element: <TestPage/>},
+            {index: true, element: <LoginRoute/>},
             {path: "login", element: <LoginRoute/>},
             {path: "sign", element: <SignRoute/>},
             {path: "coupon", element: <MyCouponRoute/>},
