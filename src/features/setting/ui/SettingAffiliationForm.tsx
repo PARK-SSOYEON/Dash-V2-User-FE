@@ -1,7 +1,7 @@
 import * as React from "react"
 import {useNavigate} from "react-router-dom";
-import {Button} from "@shared/ui/buttons/Button";
 import {MultiDropdownSelector} from "../../../shared/ui/dropdown/MultiDropdownSelector.tsx";
+import {Button} from "../../../shared/ui/buttons/Button.tsx";
 
 const sampleData = [
     {id: '1', label: '아주대학교'},
