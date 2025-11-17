@@ -7,6 +7,9 @@ import SignRoute from "./routes/Sign.tsx";
 import IssueRoute from "./routes/Issue.tsx";
 import IssueCreateRoute from "./routes/NewIssue.tsx";
 import IssueDetailRoute from "./routes/IssueDetailView.tsx";
+import SettingsRoute from "./routes/Settings.tsx";
+import SettingPhoneRoute from "./routes/SettingPhone.tsx";
+import SettingAffiliationRoute from "./routes/SettingAffiliation.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -20,7 +23,9 @@ export const router = createBrowserRouter([
             {path: "issue", element: <IssueRoute/>},
             {path: "issue/new", element: <IssueCreateRoute/>},
             {path: "issue/:id", element: <IssueDetailRoute/>},
-            {path: "settings", element: <div>환경설정</div>},
+            {path: "settings", element: <SettingsRoute/>},
+            {path: "settings/phone", element: <SettingPhoneRoute/>},
+            {path: "settings/affiliation", element: <SettingAffiliationRoute/>}
         ],
     },
 ]);

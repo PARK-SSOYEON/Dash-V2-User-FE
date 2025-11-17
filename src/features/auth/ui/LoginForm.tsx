@@ -1,26 +1,13 @@
 import * as React from "react";
-import {IconButton} from "../../../shared/ui/buttons/IconButton.tsx";
-import {Button} from "../../../shared/ui/buttons/Button.tsx";
-import {LoginHeader, type HeaderStep} from "./LoginHeader.tsx";
-import {InputGroup} from "../../../shared/ui/input/InputGroup.tsx";
+import {IconButton} from "@shared/ui/buttons/IconButton";
+import {Button} from "@shared/ui/buttons/Button.tsx";
+import {LoginHeader, type HeaderStep} from "./LoginHeader";
+import {InputGroup} from "@shared/ui/input/InputGroup";
+import {isValidPhone} from "@shared/lib/phone";
+import {isValidOtp} from "@shared/lib/otp";
+import {formatPhone} from "@shared/lib/phone";
 
 type Step = "phone" | "otp" | "done";
-
-// 전화번호 자동 포맷팅 (010-1234-5678)
-function formatPhone(value: string): string {
-    const digits = value.replace(/\D/g, "");
-    if (digits.length <= 3) return digits;
-    if (digits.length <= 7) return `${digits.slice(0, 3)}-${digits.slice(3)}`;
-    return `${digits.slice(0, 3)}-${digits.slice(3, 7)}-${digits.slice(7, 11)}`;
-}
-
-function isValidPhone(formatted: string): boolean {
-    return /^01[0-9]-\d{3,4}-\d{4}$/.test(formatted);
-}
-
-function isValidOtp(v: string): boolean {
-    return /^\d{6}$/.test(v);
-}
 
 export function LoginForm() {
     const [step, setStep] = React.useState<Step>("phone");

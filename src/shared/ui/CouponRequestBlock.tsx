@@ -21,6 +21,7 @@ export interface CouponRequestBlockProps {
 
     title: string;
     subtitle?: string;
+    subtitle2?: string;
     itemCount?: number;
     statusLabel: string;
 
@@ -56,6 +57,7 @@ export const CouponRequestBlock = ({
                                        onClick,
                                        title,
                                        subtitle,
+                                       subtitle2,
                                        itemCount,
                                        statusLabel,
                                        detailText,
@@ -98,25 +100,25 @@ export const CouponRequestBlock = ({
                         className={cn(
                             "mt-0.5 text-sm truncate",
                             !isView && "text-black",
-                            isView &&
-                            (highlightArea === 'subtitle'
-                                ? "text-(--color-blue-500)"
-                                : "text-(--color-gray-500)")
                         )}
                     >
-                        {subtitle}
+                        <span className={(isView && highlightArea === 'subtitle'
+                            ? "text-(--color-blue-500)"
+                            : "text-black/30")}>{subtitle}</span>
+                        <span className={"text-black/30"}>
+                            {subtitle2 ? ` ${subtitle2}` : ""}</span>
                     </div>
                     : null}
 
                 {detail ?
                     <div
                         className={cn(
-                            "mt-2 text-base font-normal",
+                            "mt-2 text-base font-normal truncate",
                             isView
                                 ? highlightArea === 'detail'
                                     ? "text-(--color-blue-500)"
-                                    : "text-(--color-gray-400)"
-                                : "text-(--color-gray-400)"
+                                    : "text-black/30"
+                                : "text-black/30"
                         )}
                     >
                         {detail}
@@ -132,7 +134,7 @@ export const CouponRequestBlock = ({
                     ].join(' ')}>
                       {statusLabel}
                     </span>
-                    {mode !== 'view' ? <Icon name="right" size={24} /> : null}
+                    {mode !== 'view' ? <Icon name="right" size={24}/> : null}
                 </div>
             )}
         </div>

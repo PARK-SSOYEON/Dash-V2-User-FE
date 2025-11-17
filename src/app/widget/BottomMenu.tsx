@@ -12,7 +12,7 @@ const items: Item[] = [
     {to: "/coupon", icon: "coupon"},
     {to: "/issue", icon: "issue"},
     {to: "/notice", icon: "notification"},
-    {to: "/account", icon: "profile"},
+    {to: "/settings", icon: "profile"},
 ];
 
 type BottomMenuProps = {

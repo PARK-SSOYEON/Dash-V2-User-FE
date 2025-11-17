@@ -5,12 +5,16 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
-    "baseUrl": "src",
+    "baseUrl": "./src",
     "paths": {
       "@app/*": ["app/*"],
       "@features/*": ["features/*"],
       "@entities/*": ["entities/*"],
       "@shared/*": ["shared/*"]
     }
+  },
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
   }
 }
+
