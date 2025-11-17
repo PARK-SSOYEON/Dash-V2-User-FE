@@ -6,10 +6,12 @@ import {InputGroup} from "../../../shared/ui/input/InputGroup.tsx";
 import {IconButton} from "../../../shared/ui/buttons/IconButton.tsx";
 import {Button} from "../../../shared/ui/buttons/Button.tsx";
 import {useUIStore} from "../../../shared/model/uiStore.ts";
+import {useNavigate} from "react-router-dom";
 
 type Step = "phone" | "otp" | "done";
 
 export function LoginForm() {
+    const navigate = useNavigate();
     const hideBottomMenu = useUIStore((s) => s.hideBottomMenu);
 
     React.useEffect(() => {
@@ -105,6 +107,7 @@ export function LoginForm() {
                             mode="color_fill"
                             icon={"identify"}
                             iconPosition='left'
+                            onClick={()=>navigate('/sign')}
                         > 000으로 계속 </Button>
                     </div>
                 )}
