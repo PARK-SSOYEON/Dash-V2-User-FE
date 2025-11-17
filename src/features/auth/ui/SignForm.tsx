@@ -5,6 +5,7 @@ import {InputGroup} from "../../../shared/ui/input/InputGroup.tsx";
 import {cn} from "../../../shared/lib/cn.ts";
 import {MultiDropdownSelector} from "../../../shared/ui/dropdown/MultiDropdownSelector.tsx";
 import {IconButton} from "../../../shared/ui/buttons/IconButton.tsx";
+import {useUIStore} from "../../../shared/model/uiStore.ts";
 
 type QuestionId = 1 | 2 | 3;
 
@@ -66,6 +67,12 @@ function formatBirthInput(input: string): string {
 }
 
 export function SignForm() {
+    const hideBottomMenu = useUIStore((s) => s.hideBottomMenu);
+
+    React.useEffect(() => {
+        hideBottomMenu();
+    }, []);
+
     const [name, setName] = React.useState("");
     const [birth, setBirth] = React.useState("");
     const [affiliation, setAffiliation] = React.useState<string[]>([]);
