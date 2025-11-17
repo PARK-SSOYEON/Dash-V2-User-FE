@@ -11,6 +11,7 @@ import SettingsRoute from "./routes/Settings.tsx";
 import SettingPhoneRoute from "./routes/SettingPhone.tsx";
 import SettingAffiliationRoute from "./routes/SettingAffiliation.tsx";
 import MyCouponRoute from "./routes/MyCoupon.tsx";
+import NotificationRoute from "./routes/Notification.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -24,6 +25,7 @@ export const router = createBrowserRouter([
             {path: "issue", element: <IssueRoute/>},
             {path: "issue/new", element: <IssueCreateRoute/>},
             {path: "issue/:id", element: <IssueDetailRoute/>},
+            {path: "notice", element: <NotificationRoute/>},
             {path: "settings", element: <SettingsRoute/>},
             {path: "settings/phone", element: <SettingPhoneRoute/>},
             {path: "settings/affiliation", element: <SettingAffiliationRoute/>}
