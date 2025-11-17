@@ -1,11 +1,10 @@
 import * as React from "react";
-import {IconButton} from "@shared/ui/buttons/IconButton";
-import {Button} from "@shared/ui/buttons/Button.tsx";
 import {LoginHeader, type HeaderStep} from "./LoginHeader";
-import {InputGroup} from "@shared/ui/input/InputGroup";
-import {isValidPhone} from "@shared/lib/phone";
-import {isValidOtp} from "@shared/lib/otp";
-import {formatPhone} from "@shared/lib/phone";
+import {formatPhone, isValidPhone} from "../../../shared/lib/phone.ts";
+import {isValidOtp} from "../../../shared/lib/otp.ts";
+import {InputGroup} from "../../../shared/ui/input/InputGroup.tsx";
+import {IconButton} from "../../../shared/ui/buttons/IconButton.tsx";
+import {Button} from "../../../shared/ui/buttons/Button.tsx";
 
 type Step = "phone" | "otp" | "done";
 

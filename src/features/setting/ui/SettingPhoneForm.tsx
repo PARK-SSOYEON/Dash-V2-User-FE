@@ -1,12 +1,10 @@
 import * as React from "react"
-import {Input} from "@shared/ui/input/Input";
 import {useState} from "react";
-import {isValidPhone} from "@shared/lib/phone";
-import {isValidOtp} from "@shared/lib/otp";
 import {useNavigate} from "react-router-dom";
-import {Button} from "@shared/ui/buttons/Button";
-import {formatPhone} from "@shared/lib/phone";
-
+import {formatPhone, isValidPhone} from "../../../shared/lib/phone.ts";
+import {isValidOtp} from "../../../shared/lib/otp.ts";
+import {Input} from "../../../shared/ui/input/Input.tsx";
+import {Button} from "../../../shared/ui/buttons/Button.tsx";
 type IssueStep = "phone" | "otp";
 
 
