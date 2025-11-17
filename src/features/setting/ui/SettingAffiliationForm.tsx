@@ -53,7 +53,7 @@ export function SettingAffiliationForm() {
                     mode="mono"
                     icon={"leftChevron"}
                     iconPosition='left'
-                    onClick={()=>navigate('/setting')}
+                    onClick={()=>navigate('/settings')}
                 >
                     변경 취소
                 </Button>
