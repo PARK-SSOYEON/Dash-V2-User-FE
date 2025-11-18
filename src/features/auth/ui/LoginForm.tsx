@@ -11,15 +11,19 @@ import {useLoginByPhone} from "../model/useLoginByPhone.ts";
 import type { LoginByPhoneResponse } from "../api/loginByPhone.ts";
 import type {ApiError} from "../../../shared/types/api.ts";
 import {useVerifyPhoneCode} from "../model/useVerifyPhoneCode.ts";
+import {useFinalizePhoneLogin} from "../model/useFinalizePhoneLogin.ts";
+import {useAuthStore} from "../../../shared/store/authStore.ts";
 
 type Step = "phone" | "otp" | "done";
 
 export function LoginForm() {
     const { mutate: loginByPhone } = useLoginByPhone();
     const { mutate: verifyPhoneCode} = useVerifyPhoneCode();
+    const { mutate: finalizePhoneLogin} = useFinalizePhoneLogin();
 
     const navigate = useNavigate();
     const hideBottomMenu = useUIStore((s) => s.hideBottomMenu);
+    const setAccessToken = useAuthStore((s) => s.setAccessToken);
 
     React.useEffect(() => {
         hideBottomMenu();
@@ -35,7 +39,7 @@ export function LoginForm() {
     const [otp, setOtp] = React.useState("");
     const otpValid = isValidOtp(otp);
 
-    const [phoneAuthToken, setPhoneAuthToken] = React.useState("");
+    const [userName, setUserName] = React.useState<string | null>(null);
 
     const headerStep: HeaderStep = step === "otp" ? "otp" : "default";
 
@@ -70,12 +74,19 @@ export function LoginForm() {
         }
         setErrorMsg(undefined);
 
-        verifyPhoneCode(phone, {
+        verifyPhoneCode(otp, {
             onSuccess: (data) => {
-                setPhoneAuthToken(data.phoneAuthToken);
-                //로그인 처리
-                setStep("done");
-            },
+                finalizePhoneLogin(data.phoneAuthToken, {
+                    onSuccess: (loginData) => {
+                        // accessToken 저장 및 이름 세팅
+                        setAccessToken(loginData.accessToken);
+                        setUserName(loginData.name ?? null);
+                        setStep("done");
+                    },
+                    onError: (error: ApiError) => {
+                        setErrorMsg(error.message ?? "로그인 처리에 실패했습니다.");
+                    },
+                });            },
             onError: (error: ApiError) => {
                 if (error.code === "ERR-IVD-VALUE") {
                     setErrorMsg("인증번호가 일치하지 않습니다.");
@@ -148,7 +159,11 @@ export function LoginForm() {
                             icon={"identify"}
                             iconPosition='left'
                             onClick={() => navigate(loginResult?.isUsed ? "/coupon" : "/sign")}
-                        > 000으로 계속 </Button>
+                        >
+                            {loginResult?.isUsed
+                                ? `${userName ?? "000"}으로 계속`
+                                : "새롭게 시작하기"}
+                        </Button>
                     </div>
                 )}
             </div>

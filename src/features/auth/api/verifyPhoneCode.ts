@@ -6,6 +6,11 @@ export interface VerifyPhoneCodeResponse {
     phoneAuthToken: string;
 }
 
+/**
+ * 인증번호 검증 API
+ * body: { code: string }
+ * 성공 시 phoneAuthToken 반환
+ */
 export async function verifyPhoneCode(
     code: string
 ): Promise<VerifyPhoneCodeResponse> {
