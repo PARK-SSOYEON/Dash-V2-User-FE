@@ -24,6 +24,7 @@ export function LoginForm() {
     const navigate = useNavigate();
     const hideBottomMenu = useUIStore((s) => s.hideBottomMenu);
     const setAccessToken = useAuthStore((s) => s.setAccessToken);
+    const setPhoneAuthToken = useAuthStore((s) => s.setPhoneAuthToken);
 
     React.useEffect(() => {
         hideBottomMenu();
@@ -76,9 +77,17 @@ export function LoginForm() {
 
         verifyPhoneCode(otp, {
             onSuccess: (data) => {
+                // 신규 회원: phoneAuthToken 저장 후 /sign 으로 이동
+                if (loginResult && loginResult.isUsed === false) {
+                    setPhoneAuthToken(data.phoneAuthToken);
+                    setStep("done");
+                    return;
+                }
+
+                // 기존 회원: phoneAuthToken 저장 후 최종 로그인 진행
+                setPhoneAuthToken(data.phoneAuthToken);
                 finalizePhoneLogin(data.phoneAuthToken, {
                     onSuccess: (loginData) => {
-                        // accessToken 저장 및 이름 세팅
                         setAccessToken(loginData.accessToken);
                         setUserName(loginData.name ?? null);
                         setStep("done");
@@ -86,7 +95,8 @@ export function LoginForm() {
                     onError: (error: ApiError) => {
                         setErrorMsg(error.message ?? "로그인 처리에 실패했습니다.");
                     },
-                });            },
+                });
+            },
             onError: (error: ApiError) => {
                 if (error.code === "ERR-IVD-VALUE") {
                     setErrorMsg("인증번호가 일치하지 않습니다.");

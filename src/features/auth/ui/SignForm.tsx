@@ -6,6 +6,11 @@ import {cn} from "../../../shared/lib/cn.ts";
 import {MultiDropdownSelector} from "../../../shared/ui/dropdown/MultiDropdownSelector.tsx";
 import {IconButton} from "../../../shared/ui/buttons/IconButton.tsx";
 import {useUIStore} from "../../../shared/store/uiStore.ts";
+import {useRegisterMember} from "../model/useRegisterMember.ts";
+import {useAuthStore} from "../../../shared/store/authStore.ts";
+import {useNavigate} from "react-router-dom";
+import type {ApiError} from "../../../shared/types/api.ts";
+import {formatBirthInput, isValidBirthDate} from "../lib/birth.ts";
 
 type QuestionId = 1 | 2 | 3;
 
@@ -31,42 +36,13 @@ const sampleData = [
     {id: '5', label: '사이버보안학과'},
 ];
 
-
-function isValidBirthDate(input: string): boolean {
-    if (!/^\d{4}\.\d{2}\.\d{2}$/.test(input)) return false;
-    const [yyyy, mm, dd] = input.split(".").map((v) => Number(v));
-    if (yyyy < 1900 || yyyy > 2025) return false;
-    if (mm < 1 || mm > 12) return false;
-
-    const monthDays: Record<number, number> = {
-        1: 31,
-        2: 29,
-        3: 31,
-        4: 30,
-        5: 31,
-        6: 30,
-        7: 31,
-        8: 31,
-        9: 30,
-        10: 31,
-        11: 30,
-        12: 31,
-    };
-
-    const maxDay = monthDays[mm];
-    if (dd < 1 || dd > maxDay) return false;
-
-    return true;
-}
-
-function formatBirthInput(input: string): string {
-    let v = input.replace(/[^0-9]/g, "").slice(0, 8);
-    if (v.length >= 5) v = v.slice(0, 4) + "." + v.slice(4);
-    if (v.length >= 8) v = v.slice(0, 7) + "." + v.slice(7);
-    return v;
-}
-
 export function SignForm() {
+    const { mutate: registerMember } = useRegisterMember();
+    const phoneAuthToken = useAuthStore((s) => s.phoneAuthToken);
+    const setAccessToken = useAuthStore((s) => s.setAccessToken);
+
+    const navigate = useNavigate();
+
     const hideBottomMenu = useUIStore((s) => s.hideBottomMenu);
 
     React.useEffect(() => {
@@ -88,16 +64,45 @@ export function SignForm() {
     const [signCompleted, setSignCompleted] = React.useState(false);
 
     React.useEffect(() => {
-        const t = setTimeout(() => setIntroVisible(false), 3000);
+        const t = setTimeout(() => setIntroVisible(false), 2000);
         return () => clearTimeout(t);
     }, []);
 
+    React.useEffect(() => {
+        if (!phoneAuthToken) {
+            navigate("/login", { replace: true });
+        }
+    }, [phoneAuthToken, navigate]);
+
     const handleSignSubmit = () => {
-        // TODO: API 연동 예정
-        setSignCompleted(true);
-        setTimeout(() => {
-            window.location.href = "/coupon";
-        }, 2000);
+        if (!phoneAuthToken) return;
+
+        registerMember(
+            {
+                phoneAuthToken,
+                memberName: name,
+                memberBirth: birth,
+                departAt: affiliation,
+            },
+            {
+                onSuccess: (data) => {
+                    setSignCompleted(true);
+                    setAccessToken(data.accessToken);
+                    setTimeout(() => {
+                        navigate("/coupon", { replace: true });
+                    }, 2000);
+                },
+                onError: (error: ApiError) => {
+                    if (error.code === "ERR-DUP-VALUE") {
+                        alert("이미 가입된 회원입니다.");
+                        navigate("/login", {replace: true})
+                    } else {
+                        alert(error.message ?? "회원가입에 실패했습니다.");
+                        navigate("/login", {replace: true})
+                    }
+                },
+            }
+        );
     }
 
     return (
