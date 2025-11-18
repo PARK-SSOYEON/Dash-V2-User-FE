@@ -1,4 +1,4 @@
-import {createBrowserRouter} from "react-router-dom";
+import {createBrowserRouter, Navigate} from "react-router-dom";
 import App from "../App.tsx";
 
 import LoginRoute from "./routes/Login";
@@ -11,15 +11,31 @@ import SettingPhoneRoute from "./routes/SettingPhone.tsx";
 import SettingAffiliationRoute from "./routes/SettingAffiliation.tsx";
 import MyCouponRoute from "./routes/MyCoupon.tsx";
 import NotificationRoute from "./routes/Notification.tsx";
+import {PublicRoute} from "./routes/PublicRoute.tsx";
 
 export const router = createBrowserRouter([
     {
         path: "/",
         element: <App/>,
         children: [
-            {index: true, element: <LoginRoute/>},
-            {path: "login", element: <LoginRoute/>},
-            {path: "sign", element: <SignRoute/>},
+            {
+                index: true,
+                element: <Navigate to="/login" replace />,
+            },
+            {
+                path: "login", element: (
+                    <PublicRoute>
+                        <LoginRoute/>
+                    </PublicRoute>
+                )
+            },
+            {
+                path: "sign", element: (
+                    <PublicRoute>
+                        <SignRoute/>
+                    </PublicRoute>
+                )
+            },
             {path: "coupon", element: <MyCouponRoute/>},
             {path: "issue", element: <IssueRoute/>},
             {path: "issue/new", element: <IssueCreateRoute/>},
