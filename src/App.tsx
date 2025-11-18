@@ -2,7 +2,7 @@ import {Outlet, useLocation} from "react-router-dom";
 import Layout from "./app/widget/layout.tsx";
 import {BottomMenu} from "./app/widget/BottomMenu.tsx";
 import {LoginBlob} from "./shared/ui/backgroud/LoginBlob.tsx";
-import {useUIStore} from "./shared/model/uiStore.ts";
+import {useUIStore} from "./shared/store/uiStore.ts";
 
 function App() {
     const location = useLocation();

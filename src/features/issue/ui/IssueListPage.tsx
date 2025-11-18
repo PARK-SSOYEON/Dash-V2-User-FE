@@ -3,7 +3,7 @@ import {CouponRequestBlock} from "../../../shared/ui/CouponRequestBlock.tsx";
 import {cn} from "../../../shared/lib/cn.ts";
 import {ToggleButton} from "../../../shared/ui/buttons/ToggleButton.tsx";
 import {Button} from "../../../shared/ui/buttons/Button.tsx";
-import {useUIStore} from "../../../shared/model/uiStore.ts";
+import {useUIStore} from "../../../shared/store/uiStore.ts";
 import {useNavigate} from "react-router-dom";
 
 // TODO - status back에 맞춰 수정

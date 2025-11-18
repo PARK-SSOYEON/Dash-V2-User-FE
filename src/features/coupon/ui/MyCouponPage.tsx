@@ -1,5 +1,5 @@
 import * as React from "react";
-import {useUIStore} from "../../../shared/model/uiStore.ts";
+import {useUIStore} from "../../../shared/store/uiStore.ts";
 import {CardSlider} from "../../../shared/ui/CardSlider.tsx";
 import {CouponRegisterCard} from "./CouponRegisterCard.tsx";
 import {ToggleButton} from "../../../shared/ui/buttons/ToggleButton.tsx";

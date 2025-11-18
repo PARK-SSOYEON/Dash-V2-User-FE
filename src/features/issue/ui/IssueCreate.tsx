@@ -1,5 +1,5 @@
 import {CouponRequestBlock} from "../../../shared/ui/CouponRequestBlock.tsx";
-import {useUIStore} from "../../../shared/model/uiStore.ts";
+import {useUIStore} from "../../../shared/store/uiStore.ts";
 import * as React from "react";
 import {Input} from "../../../shared/ui/input/Input.tsx";
 import {useState} from "react";

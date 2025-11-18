@@ -1,6 +1,6 @@
 import {SettingLayout} from "./SettingLayout";
 import {SettingPhoneForm} from "./SettingPhoneForm.tsx";
-import {useUIStore} from "../../../shared/model/uiStore.ts";
+import {useUIStore} from "../../../shared/store/uiStore.ts";
 import * as React from "react";
 
 export function SettingPhonePage() {

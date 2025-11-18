@@ -5,7 +5,7 @@ import {isValidOtp} from "../../../shared/lib/otp.ts";
 import {InputGroup} from "../../../shared/ui/input/InputGroup.tsx";
 import {IconButton} from "../../../shared/ui/buttons/IconButton.tsx";
 import {Button} from "../../../shared/ui/buttons/Button.tsx";
-import {useUIStore} from "../../../shared/model/uiStore.ts";
+import {useUIStore} from "../../../shared/store/uiStore.ts";
 import {useNavigate} from "react-router-dom";
 
 type Step = "phone" | "otp" | "done";

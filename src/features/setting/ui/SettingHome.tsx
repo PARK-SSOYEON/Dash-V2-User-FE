@@ -1,6 +1,6 @@
 import {SettingLayout} from "./SettingLayout";
 import {MypageSection} from "./MypageSection";
-import {useUIStore} from "../../../shared/model/uiStore.ts";
+import {useUIStore} from "../../../shared/store/uiStore.ts";
 import * as React from "react";
 
 export function SettingHome() {

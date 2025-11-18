@@ -1,19 +1,14 @@
 import React, {useEffect, useState} from 'react';
 import {Icon} from "../../../shared/ui/Icon.tsx";
 import blurredQr from "../../../shared/assets/qrimg.png";
-
-interface ProductData {
-    couponId: number;
-    productName: string;
-    partnerName: string;
-    expiredAt: string;
-}
+import type {CouponProduct} from "../../../entities/coupon/model/types.ts";
+import {CouponInfo} from "../../../entities/coupon/ui/CouponInfo.tsx";
 
 type Mode = 'DEFAULT' | 'EXPIRED' | 'USED';
 
 interface CouponViewCardProps {
     mode?: Mode;
-    product?: ProductData;
+    product?: CouponProduct;
     selectable?: boolean;
     selected?: boolean;
     onToggleSelect?: (couponId: number) => void;
@@ -104,11 +99,7 @@ export const CouponViewCard: React.FC<CouponViewCardProps> = ({
                 </div>
             )}
 
-            <div className="flex flex-col w-full mt-6 justify-start text-left gap-2">
-                <p className="font-bold text-lg text-black truncate">{product?.productName}</p>
-                <p className="font-medium text-base text-black/60">{product?.partnerName}</p>
-                <p className="font-medium text-base text-black/60">유효 기간 ~{product?.expiredAt}</p>
-            </div>
+            <CouponInfo product={product} />
         </div>
     );
 
@@ -134,11 +125,7 @@ export const CouponViewCard: React.FC<CouponViewCardProps> = ({
                 </div>
             </div>
 
-            <div className="flex flex-col w-full mt-6 justify-start text-left gap-2">
-                <p className="font-bold text-lg text-black truncate">{product?.productName}</p>
-                <p className="font-medium text-base text-black/60">{product?.partnerName}</p>
-                <p className="font-medium text-base text-black/60">유효 기간 ~{product?.expiredAt}</p>
-            </div>
+            <CouponInfo product={product} />
         </div>
     );
 
