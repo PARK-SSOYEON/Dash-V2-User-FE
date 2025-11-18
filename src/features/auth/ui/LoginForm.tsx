@@ -10,11 +10,13 @@ import {useNavigate} from "react-router-dom";
 import {useLoginByPhone} from "../model/useLoginByPhone.ts";
 import type { LoginByPhoneResponse } from "../api/loginByPhone.ts";
 import type {ApiError} from "../../../shared/types/api.ts";
+import {useVerifyPhoneCode} from "../model/useVerifyPhoneCode.ts";
 
 type Step = "phone" | "otp" | "done";
 
 export function LoginForm() {
     const { mutate: loginByPhone } = useLoginByPhone();
+    const { mutate: verifyPhoneCode} = useVerifyPhoneCode();
 
     const navigate = useNavigate();
     const hideBottomMenu = useUIStore((s) => s.hideBottomMenu);
@@ -32,6 +34,8 @@ export function LoginForm() {
 
     const [otp, setOtp] = React.useState("");
     const otpValid = isValidOtp(otp);
+
+    const [phoneAuthToken, setPhoneAuthToken] = React.useState("");
 
     const headerStep: HeaderStep = step === "otp" ? "otp" : "default";
 
@@ -65,7 +69,21 @@ export function LoginForm() {
             return;
         }
         setErrorMsg(undefined);
-        setStep("done");
+
+        verifyPhoneCode(phone, {
+            onSuccess: (data) => {
+                setPhoneAuthToken(data.phoneAuthToken);
+                //로그인 처리
+                setStep("done");
+            },
+            onError: (error: ApiError) => {
+                if (error.code === "ERR-IVD-VALUE") {
+                    setErrorMsg("인증번호가 일치하지 않습니다.");
+                } else {
+                    setErrorMsg(error.message ?? "인증에 실패했습니다.");
+                }
+            },
+        });
     };
 
 
