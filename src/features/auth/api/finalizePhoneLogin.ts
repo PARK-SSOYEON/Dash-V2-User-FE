@@ -4,7 +4,7 @@ import type {ApiError} from "../../../shared/types/api.ts";
 
 export interface FinalizePhoneLoginResponse {
     accessToken: string;
-    name?: string | null;
+    userName?: string | null;
 }
 
 /**

@@ -51,7 +51,7 @@ export function LoginForm() {
         }
         setErrorMsg(undefined);
 
-        loginByPhone(phone, {
+        loginByPhone(phone.replace(/\D/g, ""), {
             onSuccess: (data: LoginByPhoneResponse) => {
                 setLoginResult(data);
                 setStep("otp");
@@ -89,7 +89,7 @@ export function LoginForm() {
                 finalizePhoneLogin(data.phoneAuthToken, {
                     onSuccess: (loginData) => {
                         setAccessToken(loginData.accessToken);
-                        setUserName(loginData.name ?? null);
+                        setUserName(loginData.userName ?? null);
                         setStep("done");
                     },
                     onError: (error: ApiError) => {
