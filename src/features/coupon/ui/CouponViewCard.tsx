@@ -6,6 +6,7 @@ import {CouponInfo} from "../../../entities/coupon/ui/CouponInfo.tsx";
 import {usePaymentQr} from "../model/usePaymentQr.ts";
 import type {ApiError} from "../../../shared/types/api.ts";
 import {useNavigate} from "react-router-dom";
+import {useCouponStatus} from "../model/useCouponStatus.ts";
 
 type Mode = 'DEFAULT' | 'EXPIRED' | 'USED';
 
@@ -27,16 +28,24 @@ export const CouponViewCard: React.FC<CouponViewCardProps> = ({
     const [remainingSeconds, setRemainingSeconds] = useState<number>(20);
     const [isActive, setIsActive] = useState<boolean>(false);
     const [qrImg, setQrImg] = useState<string | null>(null);
+    const [localMode, setLocalMode] = useState<Mode>(mode ?? "DEFAULT");
 
     const isSelected = !!selected;
 
     const { mutate: requestPaymentQr, isPending: isRequestingQr } = usePaymentQr();
     const navigate = useNavigate();
+    const { mutate: checkCouponStatus } = useCouponStatus();
 
     const handleRootClick = () => {
         if (!selectable || !product) return;
         onToggleSelect?.(product.couponId);
     };
+
+    useEffect(() => {
+        if (mode) {
+            setLocalMode(mode);
+        }
+    }, [mode]);
 
     // remainingSeconds 값이 변경될 때마다 화면이 다시 렌더링되도록 보장
     useEffect(() => {
@@ -63,8 +72,51 @@ export const CouponViewCard: React.FC<CouponViewCardProps> = ({
         return () => window.clearInterval(timer);
     }, [isActive]);
 
+    useEffect(() => {
+        if (!isActive || !product || localMode === "USED") return;
+
+        const intervalId = window.setInterval(() => {
+            checkCouponStatus(
+                { couponId: product.couponId },
+                {
+                    onSuccess: (data) => {
+                        if (data.isUsed) {
+                            setLocalMode("USED");
+                            setIsActive(false);
+                            setRemainingSeconds(0);
+                            window.clearInterval(intervalId);
+                        }
+                    },
+                    onError: (error: ApiError) => {
+                        if (error.code === "ERR-AUTH") {
+                            alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+                            navigate("/login");
+                            window.clearInterval(intervalId);
+                            return;
+                        }
+                        if (error.code === "ERR-NOT-YOURS") {
+                            alert("본인이 등록한 쿠폰이 아닙니다.");
+                            window.clearInterval(intervalId);
+                            return;
+                        }
+                        if (error.code === "ERR-IVD-VALUE") {
+                            alert("유효하지 않은 쿠폰입니다.");
+                            window.clearInterval(intervalId);
+                            return;
+                        }
+                        console.error(error.message ?? "쿠폰 상태 확인 중 오류가 발생했습니다.");
+                    },
+                }
+            );
+        }, 500);
+
+        return () => {
+            window.clearInterval(intervalId);
+        };
+    }, [isActive, product, localMode, checkCouponStatus, navigate]);
+
     const handleActivate = () => {
-        if (selectable || !product) return;
+        if (selectable || !product || localMode === "USED") return;
         if (isRequestingQr || isActive) return;
 
         requestPaymentQr(
@@ -178,7 +230,7 @@ export const CouponViewCard: React.FC<CouponViewCardProps> = ({
     );
 
     const renderContent = () => {
-        switch (mode) {
+        switch (localMode) {
             case 'DEFAULT':
                 return defaultContent;
             case 'EXPIRED':
