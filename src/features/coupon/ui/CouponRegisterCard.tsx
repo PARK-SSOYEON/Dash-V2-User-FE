@@ -4,6 +4,8 @@ import {QRScanner} from "./QRScanner.tsx";
 import {Icon} from "../../../shared/ui/Icon.tsx";
 import {Button} from "../../../shared/ui/buttons/Button.tsx";
 import {useRegisterCouponInfo} from "../model/useRegisterCouponInfo.ts";
+import {useUploadSignature} from "../model/useUploadSignature.ts";
+import {useRegisterCoupon} from "../model/useRegisterCoupon.ts";
 import type {ApiError} from "../../../shared/types/api.ts";
 import {useNavigate} from "react-router-dom";
 
@@ -17,17 +19,30 @@ interface ProductData {
 
 type Step = 'INSTRUCTION' | 'REGISTER' | 'COMPLETE';
 
+function dataURLToFile(dataUrl: string, filename: string): File {
+    const arr = dataUrl.split(",");
+    const mimeMatch = arr[0].match(/:(.*?);/);
+    const mime = mimeMatch ? mimeMatch[1] : "image/png";
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
+}
+
 export const CouponRegisterCard: React.FC = () => {
     const [step, setStep] = useState<Step>('INSTRUCTION');
     const [product, setProduct] = useState<ProductData | null>(null);
-    const [signatureData, setSignatureData] = useState<string | null>(null);
+    const [registrationCode, setRegistrationCode] = useState<string | null>(null);
 
     React.useEffect(() => {
         if (step === 'COMPLETE') {
             const timer = setTimeout(() => {
                 setStep('INSTRUCTION');
                 setProduct(null);
-                setSignatureData(null);
+                setRegistrationCode(null);
                 sigCanvas.current?.clear();
             }, 3000);
             return () => clearTimeout(timer);
@@ -38,6 +53,8 @@ export const CouponRegisterCard: React.FC = () => {
     const qrScannerId = 'reader';
 
     const { mutate: fetchCouponByCode } = useRegisterCouponInfo();
+    const { mutate: uploadSignature, isPending } = useUploadSignature();
+    const { mutate: registerCoupon, isPending: isRegistering } = useRegisterCoupon();
     const navigate = useNavigate();
 
     // --- Step 1: INSTRUCTION ---
@@ -58,6 +75,7 @@ export const CouponRegisterCard: React.FC = () => {
             {
                 onSuccess: (data: ProductData) => {
                     setProduct(data);
+                    setRegistrationCode(decodedText);
                 },
                 onError: (error: ApiError) => {
                     if (error.code === "ERR-AUTH") {
@@ -79,29 +97,76 @@ export const CouponRegisterCard: React.FC = () => {
         );
     }, [fetchCouponByCode, navigate]);
 
-    // 서명 지우기
-    // const handleClear = () => {
-    //     sigCanvas.current?.clear();
-    //     setSignatureData(null);
-    // };
-
     const handleRegister = () => {
+        if (!product) {
+            alert("먼저 쿠폰을 인식해주세요.");
+            return;
+        }
+
+        if (!registrationCode) {
+            alert("등록코드 정보를 찾을 수 없습니다. 다시 시도해주세요.");
+            return;
+        }
+
         if (sigCanvas.current?.isEmpty()) {
             alert("서명을 먼저 해주세요.");
             console.log("서명을 먼저 해주세요.");
             return;
         }
 
-        // 서명 데이터를 Base64 이미지 URL로 추출 (getDataURL() 호출)
-        const data = sigCanvas.current?.getDataURL();
-        if (data) {
-            setSignatureData(data);
-            console.log("Signature Data:", signatureData);
-
-            // 실제 로직: 상품 정보(product.id)와 서명 데이터(data)를 서버에 전송합니다.
-            // 전송 성공 후 완료 단계로 이동
-            setStep('COMPLETE');
+        const dataUrl = sigCanvas.current?.getDataURL();
+        if (!dataUrl) {
+            alert("서명 이미지 생성에 실패했습니다.");
+            return;
         }
+
+        const file = dataURLToFile(dataUrl, "signature.png");
+
+        uploadSignature(file, {
+            onSuccess: (res) => {
+                const signatureCode = res.signatureCode;
+                registerCoupon(
+                    {
+                        couponId: product.couponId,
+                        registrationCode,
+                        signatureCode,
+                    },
+                    {
+                        onSuccess: () => {
+                            setStep("COMPLETE");
+                        },
+                        onError: (error: ApiError) => {
+                            if (error.code === "ERR-AUTH") {
+                                alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+                                navigate("/login");
+                                return;
+                            }
+                            if (error.code === "ERR-NOT-YOURS") {
+                                alert("이미 다른 사람에게 등록된 쿠폰입니다.");
+                                return;
+                            }
+                            if (error.code === "ERR-IVD-VALUE") {
+                                alert("유효하지 않은 등록코드이거나 서명 정보가 올바르지 않습니다.");
+                                return;
+                            }
+                            alert(error.message ?? "쿠폰 등록 중 오류가 발생했습니다.");
+                        },
+                    }
+                );
+            },
+            onError: (error: ApiError) => {
+                if (error.code === "ERR-AUTH") {
+                    alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+                    navigate("/login");
+                    return;
+                }
+                if (error.code === "ERR-SIZE-EXCEED") {
+                    alert("서명 이미지 용량이 너무 큽니다. 다시 시도해주세요.");
+                    return;
+                }
+                alert(error.message ?? "서명 업로드 중 오류가 발생했습니다.");
+            },
+        });
     };
 
     const registerContent = (
@@ -163,7 +228,9 @@ export const CouponRegisterCard: React.FC = () => {
 
             {(product && step === 'REGISTER') &&
                 <div className={"flex w-full"}>
-                    <Button mode="color_fill" onClick={handleRegister}> 쿠폰 등록 </Button>
+                    <Button mode="color_fill" onClick={handleRegister} disabled={isPending || isRegistering}>
+                        {isPending || isRegistering ? "등록 중..." : "쿠폰 등록"}
+                    </Button>
                 </div>}
         </div>
 
