@@ -3,6 +3,9 @@ import {Icon} from "../../../shared/ui/Icon.tsx";
 import blurredQr from "../../../shared/assets/qrimg.png";
 import type {CouponProduct} from "../../../entities/coupon/model/types.ts";
 import {CouponInfo} from "../../../entities/coupon/ui/CouponInfo.tsx";
+import {usePaymentQr} from "../model/usePaymentQr.ts";
+import type {ApiError} from "../../../shared/types/api.ts";
+import {useNavigate} from "react-router-dom";
 
 type Mode = 'DEFAULT' | 'EXPIRED' | 'USED';
 
@@ -23,8 +26,12 @@ export const CouponViewCard: React.FC<CouponViewCardProps> = ({
                                                               }) => {
     const [remainingSeconds, setRemainingSeconds] = useState<number>(20);
     const [isActive, setIsActive] = useState<boolean>(false);
+    const [qrImg, setQrImg] = useState<string | null>(null);
 
     const isSelected = !!selected;
+
+    const { mutate: requestPaymentQr, isPending: isRequestingQr } = usePaymentQr();
+    const navigate = useNavigate();
 
     const handleRootClick = () => {
         if (!selectable || !product) return;
@@ -41,7 +48,7 @@ export const CouponViewCard: React.FC<CouponViewCardProps> = ({
     useEffect(() => {
         if (!isActive) return;
 
-        setRemainingSeconds(20);
+        setRemainingSeconds(60);
         const timer = window.setInterval(() => {
             setRemainingSeconds((prev) => {
                 if (prev <= 1) {
@@ -57,8 +64,34 @@ export const CouponViewCard: React.FC<CouponViewCardProps> = ({
     }, [isActive]);
 
     const handleActivate = () => {
-        if (selectable) return;
-        setIsActive(true);
+        if (selectable || !product) return;
+        if (isRequestingQr || isActive) return;
+
+        requestPaymentQr(
+            { couponId: product.couponId },
+            {
+                onSuccess: (data) => {
+                    setQrImg(data.codeImg);
+                    setIsActive(true);
+                },
+                onError: (error: ApiError) => {
+                    if (error.code === "ERR-AUTH") {
+                        alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+                        navigate("/login");
+                        return;
+                    }
+                    if (error.code === "ERR-NOT-YOURS") {
+                        alert("본인이 등록한 쿠폰만 사용할 수 있습니다.");
+                        return;
+                    }
+                    if (error.code === "ERR-IVD-VALUE") {
+                        alert("유효하지 않은 쿠폰입니다.");
+                        return;
+                    }
+                    alert(error.message ?? "결제용 QR을 불러오는 중 오류가 발생했습니다.");
+                },
+            }
+        );
     };
 
     const defaultContent = (
@@ -78,7 +111,7 @@ export const CouponViewCard: React.FC<CouponViewCardProps> = ({
                             <>
                                 <Icon name={"lock"} size={30}/>
                                 <p className="mt-2 text-base font-medium">
-                                    눌러서 잠금해제
+                                    {isRequestingQr ? "결제코드를 불러오는 중..." : "눌러서 잠금해제"}
                                 </p>
                             </>
                         )}
@@ -88,7 +121,15 @@ export const CouponViewCard: React.FC<CouponViewCardProps> = ({
 
             {isActive && (
                 <div className="flex flex-col items-center">
-                    <div className="w-60 h-60 bg-black/30 rounded-2xl"/>
+                    {qrImg ? (
+                        <img
+                            src={qrImg}
+                            alt="결제용 QR"
+                            className="w-60 h-60 rounded-2xl bg-white object-contain"
+                        />
+                    ) : (
+                        <div className="w-60 h-60 bg-black/30 rounded-2xl"/>
+                    )}
                     <p className="mt-3 text-[11px] text-black/70">
                         재인증까지{" "}
                         <span className="text-(--color-blue-500) font-semibold">

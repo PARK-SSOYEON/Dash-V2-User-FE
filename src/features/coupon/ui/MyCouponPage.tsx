@@ -25,7 +25,7 @@ export function MyCouponPage() {
     const showBottomMenu = useUIStore((s) => s.showBottomMenu);
     const hideBottomMenu = useUIStore((s) => s.hideBottomMenu);
 
-    const { data, isLoading, isError } = useMyCoupons();
+    const { data } = useMyCoupons();
     const coupons = data?.items ?? [];
 
     React.useEffect(() => {
