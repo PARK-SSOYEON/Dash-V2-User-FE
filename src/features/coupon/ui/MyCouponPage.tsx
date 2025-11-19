@@ -6,6 +6,7 @@ import {ToggleButton} from "../../../shared/ui/buttons/ToggleButton.tsx";
 import {Button} from "../../../shared/ui/buttons/Button.tsx";
 import {ListView} from "./ListView.tsx";
 import {CouponViewCard} from "./CouponViewCard.tsx";
+import {useMyCoupons} from "../model/useMyCoupons.ts";
 
 interface couponData {
     couponId: number;
@@ -15,30 +16,6 @@ interface couponData {
     mode: 'DEFAULT' | 'EXPIRED' | 'USED';
 }
 
-const mockCoupons: couponData[] = [
-    {
-        couponId: 1,
-        productName: "오리지널 타코야끼",
-        partnerName: "호시 타코야끼",
-        expiredAt: "2025.11.17. 15:25:30",
-        mode: "DEFAULT",
-    },
-    {
-        couponId: 2,
-        productName: "치즈 타코야끼",
-        partnerName: "호시 타코야끼",
-        expiredAt: "2025.11.17. 15:25:30",
-        mode: "EXPIRED",
-    },
-    {
-        couponId: 3,
-        productName: "매운 타코야끼",
-        partnerName: "호시 타코야끼",
-        expiredAt: "2025.11.17. 15:25:30",
-        mode: "USED",
-    },
-];
-
 export function MyCouponPage() {
     const [selectMode, setSelectMode] = React.useState(false);
     const [listMode, setListMode] = React.useState(false);
@@ -47,6 +24,9 @@ export function MyCouponPage() {
 
     const showBottomMenu = useUIStore((s) => s.showBottomMenu);
     const hideBottomMenu = useUIStore((s) => s.hideBottomMenu);
+
+    const { data, isLoading, isError } = useMyCoupons();
+    const coupons = data?.items ?? [];
 
     React.useEffect(() => {
         if (selectMode) {
@@ -63,16 +43,25 @@ export function MyCouponPage() {
         );
     };
 
+    const getCouponMode = (expiredAt: string, isUsed: boolean): couponData["mode"] => {
+        if (isUsed) return "USED";
+        const date = new Date(expiredAt.replace(" ", "T"));
+        if (!Number.isNaN(date.getTime()) && date.getTime() < Date.now()) {
+            return "EXPIRED";
+        }
+        return "DEFAULT";
+    };
 
     const couponCards = [
-        ...mockCoupons.map(coupon => {
+        ...coupons.map(coupon => {
             const id = String(coupon.couponId);
             const isSelected = selectedIds.includes(id);
+            const mode = getCouponMode(coupon.expiredAt, coupon.isUsed);
 
             return (
                 <CouponViewCard
                     key={coupon.couponId}
-                    mode={coupon.mode}
+                    mode={mode}
                     product={{
                         couponId: coupon.couponId,
                         productName: coupon.productName,
@@ -83,9 +72,9 @@ export function MyCouponPage() {
                     selected={isSelected}
                     onToggleSelect={handleToggleSelect}
                 />
-            )
+            );
         }),
-        <CouponRegisterCard/>
+        <CouponRegisterCard key={"register"}/>
     ];
 
     return (
