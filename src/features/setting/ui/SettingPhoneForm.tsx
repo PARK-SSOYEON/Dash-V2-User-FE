@@ -5,10 +5,22 @@ import {formatPhone, isValidPhone} from "../../../shared/lib/phone.ts";
 import {isValidOtp} from "../../../shared/lib/otp.ts";
 import {Input} from "../../../shared/ui/input/Input.tsx";
 import {Button} from "../../../shared/ui/buttons/Button.tsx";
+import type {ApiError} from "../../../shared/types/api.ts";
+import {useLoginByPhone} from "../../auth/model/useLoginByPhone.ts";
+import {useVerifyPhoneCode} from "../../auth/model/useVerifyPhoneCode.ts";
+import {useUpdatePhone} from "../model/useUpdatePhone.ts";
+import {useAuthStore} from "../../../shared/store/authStore.ts";
+
 type IssueStep = "phone" | "otp";
 
 
 export function SettingPhoneForm() {
+    const {mutate: loginByPhone} = useLoginByPhone();
+    const {mutate: verifyPhoneCode} = useVerifyPhoneCode();
+    const {mutate: updatePhone} = useUpdatePhone();
+
+    const setAccessToken = useAuthStore((s) => s.setAccessToken);
+
     const [step, setStep] = useState<IssueStep>("phone");
     const [errorMsg, setErrorMsg] = React.useState<string | undefined>(undefined);
 
@@ -18,7 +30,7 @@ export function SettingPhoneForm() {
     const [otp, setOtp] = React.useState("");
     const otpValid = isValidOtp(otp);
 
-    const navigate=useNavigate();
+    const navigate = useNavigate();
 
     const goNextFromPhone = () => {
         if (!phoneValid) {
@@ -26,7 +38,21 @@ export function SettingPhoneForm() {
             return;
         }
         setErrorMsg(undefined);
-        setStep("otp");
+
+        loginByPhone(phone.replace(/\D/g, ""), {
+            onSuccess: () => {
+                setStep("otp");
+            },
+            onError: (error: ApiError) => {
+                if (error.code === "ERR-IVD-PARAM") {
+                    setErrorMsg("전화번호 형식이 올바르지 않습니다.");
+                } else if (error.code === "ERR-RETRY-EXCEED") {
+                    setErrorMsg("로그인 시도 횟수를 초과했습니다. 잠시 후 다시 시도해주세요.");
+                } else {
+                    setErrorMsg(error.message ?? "로그인에 실패했습니다.");
+                }
+            },
+        });
     };
 
     const goNextFromOtp = () => {
@@ -35,7 +61,27 @@ export function SettingPhoneForm() {
             return;
         }
         setErrorMsg(undefined);
-        navigate('/settings')
+
+        verifyPhoneCode(otp, {
+            onSuccess: (data) => {
+                updatePhone({ phoneAuthToken: data.phoneAuthToken }, {
+                    onSuccess: (loginData) => {
+                        setAccessToken(loginData.accessToken);
+                        navigate('/setting')
+                    },
+                    onError: (error: ApiError) => {
+                        setErrorMsg(error.message ?? "로그인 처리에 실패했습니다.");
+                    },
+                });
+            },
+            onError: (error: ApiError) => {
+                if (error.code === "ERR-IVD-VALUE") {
+                    setErrorMsg("인증번호가 일치하지 않습니다.");
+                } else {
+                    setErrorMsg(error.message ?? "인증에 실패했습니다.");
+                }
+            },
+        });
     };
 
     const stepMessages: Record<IssueStep, string> = {
@@ -84,7 +130,7 @@ export function SettingPhoneForm() {
                     mode="mono"
                     icon={"leftChevron"}
                     iconPosition='left'
-                    onClick={()=>navigate('/settings')}
+                    onClick={() => navigate('/settings')}
                 >
                     변경 취소
                 </Button>
@@ -92,7 +138,7 @@ export function SettingPhoneForm() {
                     mode={"color_fill"}
                     icon={"rightChevron"}
                     iconPosition='right'
-                    onClick={step==="phone" ? goNextFromPhone : goNextFromOtp}
+                    onClick={step === "phone" ? goNextFromPhone : goNextFromOtp}
                 >
                     {step === "phone" ? "번호 인증" : "전화번호 변경"}
                 </Button>
