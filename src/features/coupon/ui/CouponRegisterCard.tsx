@@ -3,22 +3,19 @@ import {SignatureCanvasComponent, type SignatureCanvasRef} from "./SignatureCanv
 import {QRScanner} from "./QRScanner.tsx";
 import {Icon} from "../../../shared/ui/Icon.tsx";
 import {Button} from "../../../shared/ui/buttons/Button.tsx";
+import {useRegisterCouponInfo} from "../model/useRegisterCouponInfo.ts";
+import type {ApiError} from "../../../shared/types/api.ts";
+import {useNavigate} from "react-router-dom";
 
 interface ProductData {
     couponId: number;
     productName: string;
     partnerName: string;
+    createdAt: string;
     expiredAt: string;
 }
 
 type Step = 'INSTRUCTION' | 'REGISTER' | 'COMPLETE';
-
-const mockProduct: ProductData = {
-    couponId: 1,
-    productName: '오리지널 타코야끼',
-    partnerName: '호시 타코야끼',
-    expiredAt: '2025.11.17. 15:25:30'
-};
 
 export const CouponRegisterCard: React.FC = () => {
     const [step, setStep] = useState<Step>('INSTRUCTION');
@@ -40,6 +37,9 @@ export const CouponRegisterCard: React.FC = () => {
     const sigCanvas = useRef<SignatureCanvasRef | null>(null);
     const qrScannerId = 'reader';
 
+    const { mutate: fetchCouponByCode } = useRegisterCouponInfo();
+    const navigate = useNavigate();
+
     // --- Step 1: INSTRUCTION ---
     const instructionContent = (
         <button className="flex flex-col items-center justify-center w-full h-full p-8 text-center space-y-4"
@@ -52,10 +52,32 @@ export const CouponRegisterCard: React.FC = () => {
     // --- Step 2: QR Scanning Logic ---
     const handleScanSuccess = useCallback((decodedText: string) => {
         console.log("QR Code Scanned:", decodedText);
-        // 실제 로직: decodedText (QR 값)를 서버에 보내 상품 정보를 가져옵니다.
 
-        setProduct(mockProduct);
-    }, []);
+        fetchCouponByCode(
+            { registrationCode: decodedText },
+            {
+                onSuccess: (data: ProductData) => {
+                    setProduct(data);
+                },
+                onError: (error: ApiError) => {
+                    if (error.code === "ERR-AUTH") {
+                        alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+                        navigate("/login");
+                        return;
+                    }
+                    if (error.code === "ERR-NOT-YOURS") {
+                        alert("이미 다른 사람에게 등록된 쿠폰입니다.");
+                        return;
+                    }
+                    if (error.code === "ERR-IVD-VALUE") {
+                        alert("유효하지 않은 등록코드입니다.");
+                        return;
+                    }
+                    alert(error.message ?? "쿠폰 정보를 불러오는 중 오류가 발생했습니다.");
+                },
+            }
+        );
+    }, [fetchCouponByCode, navigate]);
 
     // 서명 지우기
     // const handleClear = () => {
@@ -100,7 +122,9 @@ export const CouponRegisterCard: React.FC = () => {
             <div className="flex flex-col w-full mt-6 p-4 justify-start text-left">
                 <p className="font-bold text-lg text-black">{product?.productName || "상품명 인식중..."}</p>
                 <p className="font-medium text-base text-black/60">{product?.partnerName || "파트너명 인식중..."}</p>
-                <p className="font-medium text-base text-black/60">{product?.expiredAt ? `유효 기간 ~${mockProduct.expiredAt}` : "유효기간 인식중..."}</p>
+                <p className="font-medium text-base text-black/60">
+                    {product?.expiredAt ? `유효 기간 ~${product.expiredAt}` : "유효기간 인식중..."}
+                </p>
             </div>
 
         </div>
