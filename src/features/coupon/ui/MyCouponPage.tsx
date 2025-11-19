@@ -7,6 +7,9 @@ import {Button} from "../../../shared/ui/buttons/Button.tsx";
 import {ListView} from "./ListView.tsx";
 import {CouponViewCard} from "./CouponViewCard.tsx";
 import {useMyCoupons} from "../model/useMyCoupons.ts";
+import {useDeleteCoupons} from "../model/useDeleteCoupons.ts";
+import {useQueryClient} from "@tanstack/react-query";
+import type {ApiError} from "../../../shared/types/api.ts";
 
 interface couponData {
     couponId: number;
@@ -27,6 +30,9 @@ export function MyCouponPage() {
 
     const { data } = useMyCoupons();
     const coupons = data?.items ?? [];
+
+    const queryClient = useQueryClient();
+    const { mutate: deleteCouponsMutate, isPending: isDeleting } = useDeleteCoupons();
 
     React.useEffect(() => {
         if (selectMode) {
@@ -76,6 +82,54 @@ export function MyCouponPage() {
         }),
         <CouponRegisterCard key={"register"}/>
     ];
+
+    const handleDelete = () => {
+        if (selectedIds.length === 0) {
+            alert("삭제할 쿠폰을 선택해주세요.");
+            return;
+        }
+
+        const confirmed = window.confirm(
+            `${selectedIds.length}개의 쿠폰을 삭제하시겠습니까?`
+        );
+        if (!confirmed) return;
+
+        const couponIds = selectedIds
+            .map((id) => Number(id))
+            .filter((n) => !Number.isNaN(n));
+
+        if (couponIds.length === 0) {
+            alert("유효한 쿠폰이 없습니다.");
+            return;
+        }
+
+        deleteCouponsMutate(
+            { coupons: couponIds },
+            {
+                onSuccess: () => {
+                    alert("선택한 쿠폰이 삭제되었습니다.");
+                    setSelectedIds([]);
+                    setSelectMode(false);
+                    queryClient.invalidateQueries({ queryKey: ["myCoupons"] });
+                },
+                onError: (error: ApiError) => {
+                    if (error.code === "ERR-AUTH") {
+                        alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+                        return;
+                    }
+                    if (error.code === "ERR-NOT-YOURS") {
+                        alert("본인이 등록하지 않은 쿠폰이 포함되어 있습니다.");
+                        return;
+                    }
+                    if (error.code === "ERR-IVD-VALUE") {
+                        alert("유효하지 않은 쿠폰이 포함되어 있습니다.");
+                        return;
+                    }
+                    alert(error.message ?? "쿠폰 삭제 중 오류가 발생했습니다.");
+                },
+            }
+        );
+    }
 
     return (
         <div className="flex flex-col pt-4 w-full gap-3">
@@ -138,7 +192,11 @@ export function MyCouponPage() {
                         bottom: "max(1.5rem, env(safe-area-inset-bottom))",
                         height: "var(--bottom-nav-h,66px)",
                     }}
-                > 삭제하기 </Button>
+                    onClick={handleDelete}
+                    disabled={isDeleting}
+                >
+                    삭제하기
+                </Button>
             )}
         </div>
     )
