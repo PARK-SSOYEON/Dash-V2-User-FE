@@ -2,30 +2,48 @@ import * as React from "react"
 import {useNavigate} from "react-router-dom";
 import {MultiDropdownSelector} from "../../../shared/ui/dropdown/MultiDropdownSelector.tsx";
 import {Button} from "../../../shared/ui/buttons/Button.tsx";
-
-const sampleData = [
-    {id: '1', label: '아주대학교'},
-    {id: '2', label: '소프트웨어 융합학과'},
-    {id: '3', label: '검색어에 해당하는 선택자 1'},
-    {id: '4', label: '검색어에 해당하는 선택자 2'},
-    {id: '6', label: '검색어에 해당하는 선택자 3'},
-    {id: '7', label: '검색어에 해당하는 선택자 4'},
-    {id: '5', label: '사이버보안학과'},
-];
+import {useGroupsQuery} from "../model/useGroupQuery.ts";
+import type {ApiError} from "../../../shared/types/api.ts";
+import {useUpdateAffiliation} from "../model/useUpdateAffiliation.ts";
 
 export function SettingAffiliationForm() {
     const navigate=useNavigate();
     const [affiliation, setAffiliation] = React.useState<string[]>([]);
+    const { mutate: updateDepartMutate, isPending } = useUpdateAffiliation();
 
-    const handleSubmit=() =>{
-        if(affiliation){
-            //api
-            navigate('/settings')
-        } else (
-            //기존 설정 유지할거임?
-            navigate('/settings')
-        )
-    }
+    const { data, isLoading } = useGroupsQuery();
+
+    const options = React.useMemo(
+        () =>
+            data?.items.map((g) => ({
+                id: String(g.groupId),
+                label: g.groupName,
+            })) ?? [],
+        [data]
+    );
+
+    const handleSubmit = () => {
+        if (affiliation.length > 0) {
+            updateDepartMutate(
+                { departAt: affiliation },
+                {
+                    onSuccess: () => {
+                        navigate("/settings");
+                    },
+                    onError: (error: ApiError) => {
+                        if (error.code === "ERR-AUTH") {
+                            alert("로그인이 만료되었습니다. 다시 로그인해주세요.");
+                            return;
+                        }
+                        alert(error.message ?? "소속 정보를 수정하는 중 오류가 발생했습니다.");
+                    },
+                }
+            );
+        } else {
+            // 선택한 소속이 없으면 변경 없이 설정 화면으로 돌아갑니다.
+            navigate("/settings");
+        }
+    };
 
     return (
         <div className={"flex flex-col flex-1 bg-white p-8 gradient-border w-full rounded-4xl gap-6 "}>
@@ -35,10 +53,10 @@ export function SettingAffiliationForm() {
 
             <div className={"w-full flex flex-col gap-6"}>
                 <MultiDropdownSelector
-                    placeholder="소속단체 모두 선택"
+                    placeholder={isLoading ? "소속단체 불러오는 중..." : "소속단체 모두 선택"}
                     searchPlaceholder="검색 키워드를 입력해주세요"
-                    data={sampleData}
-                    onSelect={(items) => setAffiliation(items.map(i => i.label))}
+                    data={options}
+                    onSelect={(items) => setAffiliation(items.map((i) => i.label))}
                 />
             </div>
 
@@ -62,6 +80,7 @@ export function SettingAffiliationForm() {
                     icon={"rightChevron"}
                     iconPosition='right'
                     onClick={handleSubmit}
+                    disabled={isPending}
                 >
                     저장
                 </Button>

@@ -11,6 +11,7 @@ import {useAuthStore} from "../../../shared/store/authStore.ts";
 import {useNavigate} from "react-router-dom";
 import type {ApiError} from "../../../shared/types/api.ts";
 import {formatBirthInput, isValidBirthDate} from "../lib/birth.ts";
+import {useGroupsQuery} from "../../group/model/useGroupsQuery.ts";
 
 type QuestionId = 1 | 2 | 3;
 
@@ -26,15 +27,6 @@ const questionTitleVariants = cva("text-lg font-bold", {
     },
 });
 
-const sampleData = [
-    {id: '1', label: '아주대학교'},
-    {id: '2', label: '소프트웨어 융합학과'},
-    {id: '3', label: '검색어에 해당하는 선택자 1'},
-    {id: '4', label: '검색어에 해당하는 선택자 2'},
-    {id: '6', label: '검색어에 해당하는 선택자 3'},
-    {id: '7', label: '검색어에 해당하는 선택자 4'},
-    {id: '5', label: '사이버보안학과'},
-];
 
 export function SignForm() {
     const { mutate: registerMember } = useRegisterMember();
@@ -52,6 +44,16 @@ export function SignForm() {
     const [name, setName] = React.useState("");
     const [birth, setBirth] = React.useState("");
     const [affiliation, setAffiliation] = React.useState<string[]>([]);
+
+    const { data: groupsData, isLoading: isGroupsLoading } = useGroupsQuery();
+    const affiliationOptions = React.useMemo(
+        () =>
+            groupsData?.items.map((g) => ({
+                id: String(g.groupId),
+                label: g.groupName,
+            })) ?? [],
+        [groupsData]
+    );
 
     const [activeQuestion, setActiveQuestion] = React.useState<1 | 2 | 3>(1);
     const [nameDone, setNameDone] = React.useState(false);
@@ -232,15 +234,16 @@ export function SignForm() {
                                     {isActive && id === 3 && (
                                         <div className="flex flex-row gap-2">
                                             <MultiDropdownSelector
-                                                placeholder="소속단체 모두 선택"
+                                                placeholder={isGroupsLoading ? "소속단체 불러오는 중..." : "소속단체 모두 선택"}
                                                 searchPlaceholder="검색 키워드를 입력해주세요"
-                                                data={sampleData}
-                                                onSelect={(items) => setAffiliation(items.map(i => i.label))}
+                                                data={affiliationOptions}
+                                                onSelect={(items) => setAffiliation(items.map((i) => i.label))}
                                             />
                                             <IconButton
                                                 mode={"blue_line"}
                                                 icon={"rightArrow"}
-                                                onClick={handleSignSubmit}/>
+                                                onClick={handleSignSubmit}
+                                            />
                                         </div>
                                     )}
 
