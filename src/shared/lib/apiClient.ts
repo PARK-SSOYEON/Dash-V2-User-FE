@@ -74,7 +74,7 @@ apiClient.interceptors.request.use(
         // refresh 후에도 토큰이 없으면 Authorization 없이 진행 (서버에서 401을 줄 수 있음)
         if (token) {
             config.headers = config.headers ?? {};
-            config.headers.Authorization = `Bearer ${token}`;
+            config.headers.Authorize = `Bearer ${token}`;
         }
 
         return config;
