@@ -1,18 +1,14 @@
 import {CouponRequestBlock} from "../../../shared/ui/CouponRequestBlock.tsx";
 import * as React from "react";
 import {useLocation} from "react-router-dom";
+import {useMyProfile} from "../model/useMyProfile.ts";
+import type {Group} from "../../../entities/group/model/types.ts";
 
 type Profile = {
     name: string;
     phone: string;
-    affiliation: string[];
+    affiliation: Group[];
 };
-
-const sampleData: Profile = {
-    name: "ㅁㅁㅁ님",
-    phone: "010-1234-1234",
-    affiliation: ["아주대학교", "소프트웨어융합대학", "사이버보안학과"]
-}
 
 export function SettingLayout({children}: { children?: React.ReactNode }) {
 
@@ -22,6 +18,17 @@ export function SettingLayout({children}: { children?: React.ReactNode }) {
         : location.pathname.includes("affiliation")
             ? "detail"
             : undefined;
+
+    const { data } = useMyProfile();
+
+    const profile: Profile = React.useMemo(
+        () => ({
+            name: data ? `${data.memberName}님` : "파트너님",
+            phone: data?.number ?? "",
+            affiliation: data?.groups || []
+        }),
+        [data]
+    );
 
     return (
         <div className="flex flex-col pt-4 w-full gap-4 min-h-[calc(100vh-var(--bottom-nav-h,66px)-40px)]">
@@ -33,10 +40,10 @@ export function SettingLayout({children}: { children?: React.ReactNode }) {
 
             <CouponRequestBlock
                 mode="view"
-                title={sampleData.name}
-                subtitle={sampleData.phone}
+                title={profile.name}
+                subtitle={profile.phone}
                 subtitle2={"개인회원"}
-                detailText={sampleData.affiliation.join("    ")}
+                detailText={profile.affiliation.join("    ")}
                 statusLabel={""}
                 highlightArea={highlightArea}
                 showStatus={false}
