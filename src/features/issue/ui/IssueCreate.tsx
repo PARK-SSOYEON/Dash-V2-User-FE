@@ -8,6 +8,7 @@ import {DropdownSelector} from "../../../shared/ui/dropdown/DropdownSelector.tsx
 import {type IssueItem, MenuInput} from "../../../shared/ui/MenuInput.tsx";
 import {usePartnerSearch} from "../model/usePartnerSearch.ts";
 import {useCreateIssueRequest} from "../model/useCreateIssueRequest.ts";
+import {useNavigate} from "react-router-dom";
 
 type IssueStep = 1 | 2 | 3 | 4;
 
@@ -38,6 +39,7 @@ export function IssueCreate() {
     const [items, setItems] = React.useState<IssueItem[]>([]);
 
     const hideBottomMenu = useUIStore((s) => s.hideBottomMenu);
+    const navigate = useNavigate();
 
     const stepMessages: Record<IssueStep, string> = {
         1: "1. 어떤 쿠폰인가요?",
@@ -219,7 +221,7 @@ export function IssueCreate() {
                     mode="mono"
                     icon={"leftChevron"}
                     iconPosition='left'
-                    onClick={handlePrevStep}
+                    onClick={step === 1 ? () => navigate('/issue') : handlePrevStep}
                 >
                     {step === 1 ? "발행 취소" : step === 4 ? "옵션 수정" : "이전 입력"}
                 </Button>
