@@ -227,7 +227,7 @@ export function IssueCreate() {
                     mode={step===4 ? "color_fill" : "blue_line"}
                     icon={"rightChevron"}
                     iconPosition='right'
-                    onClick={()=> step===4 ? handleSubmit:  handleNextStep}
+                    onClick={step===4 ? handleSubmit:  handleNextStep}
                 >
                     {step === 4 ? "요청 전송" : "입력 완료"}
                 </Button>
