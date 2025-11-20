@@ -79,7 +79,7 @@ export function SignForm() {
     React.useEffect(() => {
         console.log(phoneAuthToken)
         // ⭐️ 수정: Store 상태 복원이 완료되었고, phoneAuthToken이 없다면 리디렉션
-        if (hasHydrated && !phoneAuthToken) {
+        if (!phoneAuthToken) {
             navigate("/login", { replace: true });
         }
     }, [phoneAuthToken, navigate, hasHydrated]); // hasHydrated를 의존성 배열에 추가
