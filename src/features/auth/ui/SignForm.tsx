@@ -11,7 +11,7 @@ import {useAuthStore} from "../../../shared/store/authStore.ts";
 import {useNavigate} from "react-router-dom";
 import type {ApiError} from "../../../shared/types/api.ts";
 import {formatBirthInput, isValidBirthDate} from "../lib/birth.ts";
-import {useGroupsQuery} from "../../group/model/useGroupsQuery.ts";
+import {useGroupsQuery} from "../../setting/model/useGroupQuery.ts";
 
 type QuestionId = 1 | 2 | 3;
 

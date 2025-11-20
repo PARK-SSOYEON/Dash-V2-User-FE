@@ -14,6 +14,8 @@ interface DropdownSelectorProps {
     searchPlaceholder: string;
     data: Item[];
     onSelect: (item: Item | null) => void;
+    /** 검색어가 변경될 때 호출되는 콜백 (서버 검색 등에서 사용) */
+    onSearchChange?: (value: string) => void;
 }
 
 const inputContainerVariants = cva(
@@ -32,11 +34,12 @@ const inputContainerVariants = cva(
 );
 
 export const DropdownSelector: React.FC<DropdownSelectorProps> = ({
-                                                                      placeholder,
-                                                                      searchPlaceholder,
-                                                                      data,
-                                                                      onSelect,
-                                                                  }) => {
+    placeholder,
+    searchPlaceholder,
+    data,
+    onSelect,
+    onSearchChange,
+}) => {
     const [isFocused, setIsFocused] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedItem, setSelectedItem] = useState<Item | null>(null);
@@ -97,7 +100,13 @@ export const DropdownSelector: React.FC<DropdownSelectorProps> = ({
                         className={`w-full focus:outline-none text-base font-semibold ${activeTextClass}`}
                         placeholder={searchPlaceholder}
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            setSearchTerm(value);
+                            if (onSearchChange) {
+                                onSearchChange(value);
+                            }
+                        }}
                         autoFocus
                     />
                 ) : (

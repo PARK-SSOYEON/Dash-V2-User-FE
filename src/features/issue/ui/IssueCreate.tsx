@@ -6,22 +6,24 @@ import {useState} from "react";
 import {Button} from "../../../shared/ui/buttons/Button.tsx";
 import {DropdownSelector} from "../../../shared/ui/dropdown/DropdownSelector.tsx";
 import {type IssueItem, MenuInput} from "../../../shared/ui/MenuInput.tsx";
+import {usePartnerSearch} from "../model/usePartnerSearch.ts";
+import {useCreateIssueRequest} from "../model/useCreateIssueRequest.ts";
 
 type IssueStep = 1 | 2 | 3 | 4;
 
-type Partner = {
-    id: string;
-    label: string;
-    phone: string;
-};
-
-const sampleData: Partner[] = [
-    {id: "p1", label: "스타벅스 강남점", phone: "010-1234-5678"},
-    {id: "p2", label: "이디야 역삼점", phone: "010-2345-6789"},
-    {id: "p3", label: "투썸 강남대로점", phone: "010-3456-7890"},
-];
-
 export function IssueCreate() {
+    const [partnerKeyword, setPartnerKeyword] = useState("");
+    const { data } = usePartnerSearch(partnerKeyword);
+
+    const partners =
+        data?.items.map((p) => ({
+            id: String(p.partnerId),
+            label: p.partnerName,
+            phone: p.numbers,
+        })) ?? [];
+
+    const { mutate: submitIssueRequest } = useCreateIssueRequest();
+
     const [step, setStep] = useState<IssueStep>(1);
     const isLastStep = step === 4;
 
@@ -58,6 +60,46 @@ export function IssueCreate() {
         }
 
         setStep((prev) => Math.min(4, (prev as IssueStep) + 1) as IssueStep);
+    };
+
+    const handleSubmit = () => {
+        // products 변환: IssueItem → Product
+        const products = items.map((item) => ({
+            isNew: item.isNew,
+            productId: item.productId,
+            productName: item.name,
+            count: item.qty,
+        }));
+
+        // partner 변환: 기존 선택 or 직접 입력
+        const partnerPayload = store
+            ? {
+                  isNew: false,
+                  partnerId: Number(
+                      partners.find((p) => p.label === store)?.id
+                  ),
+              }
+            : {
+                  isNew: true,
+                  partnerName: store,
+                  partnerPhone: phone,
+              };
+
+        submitIssueRequest(
+            {
+                title,
+                partner: partnerPayload,
+                products,
+            },
+            {
+                onSuccess: () => {
+                    alert("발행요청이 성공적으로 전송되었습니다.");
+                },
+                onError: (error) => {
+                    alert(error.message ?? "요청 전송 중 오류가 발생했습니다.");
+                },
+            }
+        );
     };
 
     React.useEffect(() => {
@@ -112,7 +154,8 @@ export function IssueCreate() {
                             <DropdownSelector
                                 placeholder="요청 파트너명"
                                 searchPlaceholder="검색 키워드를 입력해주세요"
-                                data={sampleData}
+                                data={partners}
+                                onSearchChange={(value) => setPartnerKeyword(value)}
                                 onSelect={(item) => {
                                     if (!item) {
                                         setStore("");
@@ -139,11 +182,17 @@ export function IssueCreate() {
                         <MenuInput
                             items={items}
                             onChange={setItems}
-                            onDelete={(id) => setItems((prev) => prev.filter((x) => x.id !== id))}
+                            onDelete={(id) => setItems((prev) => prev.filter((x) => x.rowId !== id))}
                             onAdd={() =>
                                 setItems((prev) => [
                                     ...prev,
-                                    {id: crypto.randomUUID(), name: "", qty: 0},
+                                    {
+                                        rowId: crypto.randomUUID(),
+                                        productId: undefined,
+                                        isNew: true,
+                                        name: "",
+                                        qty: 0,
+                                    },
                                 ])
                             }
                             mode={"edit"}
@@ -178,7 +227,7 @@ export function IssueCreate() {
                     mode={step===4 ? "color_fill" : "blue_line"}
                     icon={"rightChevron"}
                     iconPosition='right'
-                    onClick={handleNextStep}
+                    onClick={()=> step===4 ? handleSubmit:  handleNextStep}
                 >
                     {step === 4 ? "요청 전송" : "입력 완료"}
                 </Button>
