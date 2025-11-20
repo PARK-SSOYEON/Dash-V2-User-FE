@@ -2,8 +2,11 @@ import {DetailBox, type DetailItem} from "../../../shared/ui/DetailBox.tsx";
 import {type IssueItem, MenuInput} from "../../../shared/ui/MenuInput.tsx";
 import * as React from "react";
 import {Button} from "../../../shared/ui/buttons/Button.tsx";
-import {useExportIssueCouponImage} from "../model/useExportIssueCouponImage.ts";
+import type {IssueCouponsApprovedInfo} from "../api/getIssueCoupons.ts";
 import {useExportIssueCouponList} from "../model/useExportIssueCouponList.ts";
+import {useExportIssueCouponImage} from "../model/useExportIssueCouponImage.ts";
+import type {ApiError} from "../../../shared/types/api.ts";
+import {useNavigate} from "react-router-dom";
 
 type CouponHistoryProps = {
     issueInfo: IssueCouponsApprovedInfo;
@@ -11,8 +14,9 @@ type CouponHistoryProps = {
 };
 
 export function CouponHistory({issueInfo, issueId}: CouponHistoryProps) {
-    const { mutate: exportList } = useExportIssueCouponList();
-    const { mutate: exportImage } = useExportIssueCouponImage();
+    const {mutate: exportList} = useExportIssueCouponList();
+    const {mutate: exportImage} = useExportIssueCouponImage();
+    const navigate = useNavigate();
 
     const items: DetailItem[] = [
         {
@@ -37,11 +41,27 @@ export function CouponHistory({issueInfo, issueId}: CouponHistoryProps) {
         },
     ];
 
-    const [menuItems, setMenuItems] = React.useState<IssueItem[]>([
-        { id: "1", name: "오리지널 타코야끼", qty: 5 },
-        { id: "2", name: "네기 타코야끼", qty: 100 },
-        { id: "3", name: "눈꽃치즈 타코야끼", qty: 1000 }
-    ]);
+    const [menuItems, setMenuItems] = React.useState<IssueItem[]>(() =>
+        issueInfo.products.map((product, index) => ({
+            rowId: String(product.productId ?? index + 1),
+            productId: product.productId,
+            isNew: !product.productId,
+            name: product.productName ?? "",
+            qty: product.count,
+        }))
+    );
+
+    React.useEffect(() => {
+        setMenuItems(
+            issueInfo.products.map((product, index) => ({
+                rowId: String(product.productId ?? index + 1),
+                productId: product.productId,
+                isNew: !product.productId,
+                name: product.productName ?? "",
+                qty: product.count,
+            }))
+        );
+    }, [issueInfo.products]);
 
     const handleListDownload = () => {
         if (!issueId) return;
@@ -101,15 +121,16 @@ export function CouponHistory({issueInfo, issueId}: CouponHistoryProps) {
         });
     }
 
+
     return (
         <div className="flex flex-col w-full gap-6">
             <div className="flex flex-col w-full text-xl font-bold gap-4">
-                기본 정보
-                <DetailBox items={basicItems}/>
+                발행 정보
+                <DetailBox items={items}/>
             </div>
 
             <div className="flex flex-col w-full text-xl font-bold gap-4">
-                발행품목 및 수량
+                상세 발행내역
                 <MenuInput
                     items={menuItems}
                     onChange={setMenuItems}

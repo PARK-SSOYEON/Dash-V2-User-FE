@@ -1,44 +1,61 @@
 import {DetailBox, type DetailItem} from "../../../shared/ui/DetailBox.tsx";
 import {type IssueItem, MenuInput} from "../../../shared/ui/MenuInput.tsx";
 import * as React from "react";
+import type {IssueRequestDetailResponse} from "../api/getIssueRequestDetail.ts";
 
-export function IssueRequest() {
+export function IssueRequest({issue}: {issue: IssueRequestDetailResponse}) {
 
-    const basicItems: DetailItem[] = [
+    const items: DetailItem[] = [
         {
             id: "title",
             label: "요청서 제목",
-            value: "사이버보안학과 신입생 간식사업 조금 더 길게",
+            value: issue.title,
         },
         {
-            id: "partner",
-            label: "요청 파트너",
-            value: "호시 타코야끼",
+            id: "name",
+            label: "요청자",
+            value: issue.vendor.memberName,
         },
         {
             id: "phone",
-            label: "요청 연락처",
-            value: "010-1234-1234",
+            label: "연락처",
+            value: issue.vendor.number,
         },
         {
-            id: "date",
+            id: "request_date",
             label: "요청일시",
-            value: "2025.11.07. 14:30:56"
+            value: issue.requestedAt,
         },
     ];
 
-    const [menuItems, setMenuItems] = React.useState<IssueItem[]>([
-        { id: "1", name: "오리지널 타코야끼", qty: 5 },
-        { id: "2", name: "네기 타코야끼", qty: 100 },
-        { id: "3", name: "눈꽃치즈 타코야끼", qty: 1000 }
-    ]);
+    const [menuItems, setMenuItems] = React.useState<IssueItem[]>(() =>
+        issue.products.map((product, index) => ({
+            rowId: String(product.productId ?? index + 1),
+            productId: product.productId,
+            isNew: !product.productId,
+            name: product.productName ?? "",
+            qty: product.count,
+        }))
+    );
+
+    React.useEffect(() => {
+        setMenuItems(
+            issue.products.map((product, index) => ({
+                rowId: String(product.productId ?? index + 1),
+                productId: product.productId,
+                isNew: !product.productId,
+                name: product.productName ?? "",
+                qty: product.count,
+            }))
+        );
+    }, [issue.products]);
 
 
     return (
         <div className="flex flex-col w-full gap-6">
             <div className="flex flex-col w-full text-xl font-bold gap-4">
                 기본 정보
-                <DetailBox items={basicItems}/>
+                <DetailBox items={items}/>
             </div>
 
             <div className="flex flex-col w-full text-xl font-bold gap-4">
