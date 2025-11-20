@@ -30,7 +30,7 @@ const questionTitleVariants = cva("text-lg font-bold", {
 
 export function SignForm() {
     const { mutate: registerMember } = useRegisterMember();
-
+    const hasHydrated = useAuthStore((s) => s._hasHydrated);
     const location = useLocation();
     const phoneAuthTokenFromState =
         (location.state as { phoneAuthToken?: string } | null)?.phoneAuthToken ?? null;
@@ -77,10 +77,11 @@ export function SignForm() {
     }, []);
 
     React.useEffect(() => {
-        if (!phoneAuthToken) {
+        // ⭐️ 수정: Store 상태 복원이 완료되었고, phoneAuthToken이 없다면 리디렉션
+        if (hasHydrated && !phoneAuthToken) {
             navigate("/login", { replace: true });
         }
-    }, [phoneAuthToken, navigate]);
+    }, [phoneAuthToken, navigate, hasHydrated]); // hasHydrated를 의존성 배열에 추가
 
     const handleSignSubmit = () => {
         if (!phoneAuthToken) return;

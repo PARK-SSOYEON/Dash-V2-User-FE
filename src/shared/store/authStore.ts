@@ -7,6 +7,7 @@ type AuthState = {
     setAccessToken: (token: string | null) => void;
     setPhoneAuthToken: (token: string | null) => void;
     clearAuth: () => void;
+    _hasHydrated: boolean;
 };
 
 export const useAuthStore = create<AuthState>()(
@@ -14,12 +15,18 @@ export const useAuthStore = create<AuthState>()(
         (set) => ({
             accessToken: null,
             phoneAuthToken: null,
+            _hasHydrated: false, // 초기값 false
             setAccessToken: (token) => set({ accessToken: token }),
             setPhoneAuthToken: (token) => set({ phoneAuthToken: token }),
             clearAuth: () => set({ accessToken: null, phoneAuthToken: null }),
         }),
         {
             name: "auth", // localStorage key
+            onRehydrateStorage: () => (state) => {
+                if (state) {
+                    state._hasHydrated = true;
+                }
+            }
         }
     )
 );
