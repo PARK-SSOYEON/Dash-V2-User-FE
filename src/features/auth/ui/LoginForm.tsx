@@ -78,8 +78,9 @@ export function LoginForm() {
         verifyPhoneCode(otp, {
             onSuccess: (data) => {
                 // 신규 회원: phoneAuthToken 저장 후 /sign 으로 이동
-                if (loginResult && loginResult.isUsed === false) {
+                if (loginResult && !loginResult.isUsed) {
                     setPhoneAuthToken(data.phoneAuthToken);
+                    console.log("LoginForm set phoneAuthToken:", data.phoneAuthToken);
                     setStep("done");
                     return;
                 }
