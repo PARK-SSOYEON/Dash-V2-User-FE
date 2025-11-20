@@ -25,6 +25,7 @@ export function LoginForm() {
     const hideBottomMenu = useUIStore((s) => s.hideBottomMenu);
     const setAccessToken = useAuthStore((s) => s.setAccessToken);
     const setPhoneAuthToken = useAuthStore((s) => s.setPhoneAuthToken);
+    const phoneAuthToken = useAuthStore((s) => s.phoneAuthToken);
 
     React.useEffect(() => {
         hideBottomMenu();
@@ -169,7 +170,13 @@ export function LoginForm() {
                             mode="color_fill"
                             icon={"identify"}
                             iconPosition='left'
-                            onClick={() => navigate(loginResult?.isUsed ? "/coupon" : "/sign")}
+                            onClick={() => {
+                                if (loginResult?.isUsed) {
+                                    navigate("/coupon");
+                                } else {
+                                    navigate("/sign", { state: { phoneAuthToken } });
+                                }
+                            }}
                         >
                             {loginResult?.isUsed
                                 ? `${userName ?? "000"}으로 계속`

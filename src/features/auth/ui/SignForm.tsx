@@ -8,7 +8,7 @@ import {IconButton} from "../../../shared/ui/buttons/IconButton.tsx";
 import {useUIStore} from "../../../shared/store/uiStore.ts";
 import {useRegisterMember} from "../model/useRegisterMember.ts";
 import {useAuthStore} from "../../../shared/store/authStore.ts";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import type {ApiError} from "../../../shared/types/api.ts";
 import {formatBirthInput, isValidBirthDate} from "../lib/birth.ts";
 import {useGroupsQuery} from "../../setting/model/useGroupQuery.ts";
@@ -30,7 +30,13 @@ const questionTitleVariants = cva("text-lg font-bold", {
 
 export function SignForm() {
     const { mutate: registerMember } = useRegisterMember();
-    const phoneAuthToken = useAuthStore((s) => s.phoneAuthToken);
+
+    const location = useLocation();
+    const phoneAuthTokenFromState =
+        (location.state as { phoneAuthToken?: string } | null)?.phoneAuthToken ?? null;
+
+    const storePhoneAuthToken = useAuthStore((s) => s.phoneAuthToken);
+    const phoneAuthToken = phoneAuthTokenFromState ?? storePhoneAuthToken;
     const setAccessToken = useAuthStore((s) => s.setAccessToken);
 
     const navigate = useNavigate();
